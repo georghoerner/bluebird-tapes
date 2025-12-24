@@ -1,0 +1,299 @@
+<army>
+1-82 MOTOR RIFLES, “EMPTY POCKETS”
+1ST PLATOON - 100 PTS, 3 COMMAND
+__________________________
+
+Uther Section - HQ
+Type 68C “Appomattox” - 0 pts (TACOM)
+
+Aart Section - Recoilless Rifle
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [E] Recoilless Rifle Team - 15 pts
+
+Elmo Section - Ranger Attaches
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [E] Idntermarine Rangers - 15 pts
+
+Olli Section - Mortar
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [E] Mortar Team - 10 pts
+</army>
+
+<army<start>>
+21E INFANTERIE LÉGÈRE, “STUMPTAILS”
+2E SECTION - 100 PTS, 3 COMMAND
+__________________________
+1st Groupe - HQ
+Company Chief - 0 pts (TACOM)
+Chasseurs - 10 pts
+2nd Groupe - Recoilless Rifle
+Chasseurs - 10 pts
+Recoilless Rifle Team - 15 pts
+3rd Groupe - Anti-Armor
+Subaltern Team - 10 pts
+Chasseurs - 10 pts
+Guided Missile Team - 20 pts
+4th Groupe - Mortar
+Chasseurs - 10 pts
+Hima Team - 15 pts
+FUERZAS REGULARES BAUZALERAS
+I. COMPAÑÍA - 400 PTS
+__________________________
+I. Pelotón - Infantry (1)
+Baronial Tenant - 0 pts (TACOM) (x2)
+Light Gun Team - 5 pts (x3)
+- [1] Grenadier Team - 10 pts (x2)
+- [2] Santagrine Militia - 5 pts (x2)
+- [3] Volley Team - 5 pts (x2)
+II. Pelotón - Mortar (2)
+Baronial Tenant - 0 pts (TACOM) (x2)
+Machine Gun Team - 10 pts (x2)
+Bombard Team - 15 pts
+- [1] Grenadier Team - 10 pts (x2)
+- [2] Santagrine Militia - 5 pts (x2)
+- [3] Volley Team - 5 pts (x2)
+I. Artillería - Fire Support (3)
+Field Gun - 10 pts (x4)
+Sb.15 1-lber “Pom-Pom” - 10 pts (x3)
+Sb.18 “Retumbo” - 20 pts (x3)
+War Wagon - 5 pts (x4)
+I. Tropa - Armor (4)
+Hexamer - 10 pts (x4)
+VC.2 “Veldjen” - 20 pts (x2)
+OSM “Mogul” - 40 pts
+
+
+
+
+2-490 ARMOR, “CANEBRAKES”
+COMPANY A - 200 PTS, 7 COMMAND
+__________________________
+Uther Section - HQ
+Type 68C “Appomattox” - 0 pts (TACOM)
+Type 55MC “Razorback-MC” - 30 pts (TAC)
+Type 55M “Razorback-M” - 40 pts
+Aart Section - Infantry
+Type 68 “Bantam” - 20 pts
+- [E] States-Grenadiers - 10 pts
+- [D] Reservists - 5 pts
+Type 68 “Bantam” - 20 pts
+- [E] States-Grenadiers - 10 pts
+- [D] Reservists - 5 pts
+Isaac Section - Fire Support
+LaF-18 “Ox” - 10 pts
+- [T] 2K52 “Wheat” - 25 pts
+- [E] MANPADS Team - 10 pts
+- [E] Mortar Team - 10 pts
+- [D] Reservists - 5 pts
+
+
+1-1 RAPID RECON, “KEMP’S PICKET”
+COMPANY D - 200 PTS, 7 COMMAND
+__________________________
+Uther Section - HQ
+Type 68C “Appomattox” - 0 pts (TACOM)
+Type 52C “Duck-C” - 15 pts (TACOM)
+Type 52 “Duck” - 20 pts
+Aart Section - Infantry
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [E] Recoilless Rifle Team - 15 pts
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [E] Recoilless Rifle Team - 15 pts
+Elmo Team - Reconnaissance
+HzN-18 “Moose” - 15 pts
+- [E] Intermarine Rangers - 15 pts
+- [E] ATGM Team - 10 pts
+Isaac Section - Fire Support
+Type 60AT “Runner” - 25 pts
+Type 60MD “Wave” - 30 pts
+
+99E L’INTERIEUR, “VOULGIERS-Á-PIED”
+5E CO. - 300 PTS, 12 COMMAND
+__________________________
+1er Groupe - Escort
+VBD-3 “Motte” - 20 pts
+- [E] I.S. Escort - 15 pts (TACOM)
+CdA-36 “Broomcloud” - 25 pts
+CdA-25 “Saucer” - 20 pts
+2e Groupe - Infantry
+VBD-3 “Motte” - 20 pts
+- [E] I.S. Escort - 15 pts (TACOM)
+VBD-1 “Tanner” - 10 pts (x3)
+- [E] Internal Security - 20 pts
+3e Groupe - Armor
+VBD-3 “Motte” - 20 pts
+- [E] I.S. Escort - 15 pts (TACOM)
+Char 30 “Veldjen” - 20 pts (x3)
+
+CLAN DARRIGRAND & MERCENARIES
+HOUSE GUARD - 300 PTS, 9 COMMAND
+__________________________
+Clan Darrigrand Youths - Guerillas (1)
+Company Chief - 0 pts (TACOM)
+Territorials - 5 pts (x5)
+Machine Gun Team - 10 pts
+Recoilless Rifle Team - 15 pts
+Chief Aloysius & Trophy Army - A.T. (2)
+CdS-1 “Kennel” - 10 pts
+- [E] Waykeepers - 15 pts
+CdS-1 “Kennel” - 10 pts
+- [E] Company Chief - 0 pts (TACOM)
+- [T] DAG-16 “Cherry” - 25 pts
+CdS-1 “Kennel” - 10 pts
+- [E] Ironpelts - 15 pts
+VBD Special “Lugus” - 25 pts
+CdA-25 “Saucer” - 20 pts
+“Longdrink” River Pirates - Support (3)
+VdIM-K “Karve” - 10 pts
+- [E] Company Chief - 0 pts (TACOM)
+- [E] Machine Gun Team - 10 pts
+- [E] Hima Team - 15 pts
+- [E] Recoilless Rifle Team - 15 pts
+- [D] Territorials - 5 pts
+Otiis Bacuundijk - Mercenary (4)
+HzN-18B “Bison” - 25 pts (FM 100-1-8X)
+- [E] Bounders - 20 pts
+Hired Bush Pilots - Planes**
+R-2 “Chien de Chasse” - 10 pts (x2)
+
+2-848 LOWLAND RIFLES, “WOOLSOCKS”
+1ST PLATOON - 100 PTS, 3 COMMAND
+__________________________
+Uther Section - HQ
+Type 68C “Appomattox” - 0 pts (TACOM)
+Type 40M "Veldjen-M" - 20 pts
+Aart Section - Infantry
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+Elmo Section - Infantry
+Type 60 “Grumble” - 10 pts
+- [E] States-Grenadiers - 10 pts
+Isaac Section - Pathfinders
+Type 68 “Bantam” - 20 pts
+- [E] Pup Carson Scouts - 10 pts
+- [E] Mortar Team - 10 pts
+
+SECURITY TASK ELEMENT JASPER-15
+EXAMPLE - 100 PTS, 2 COMMAND
+__________________________
+Task Unit 1 - Headquarters
+P1 “Parallax” - 35 pts
+- [E] Tactical Team - 15 pts
+- [E] Node Team - 0 pts (TACOM)
+Task Unit 2 - Reconnaissance
+M1 “Microwave” - 20 pts
+- [D] Tactical Team - 15 pts
+- [D] Smart Gun Team - 15 pts
+
+3-35 MOTOR RIFLES, “GUNTHER'S CHAIN”
+2ND & 4TH PLATOONS - 150 PTS, 4 COM.
+__________________________
+Uther Section - HQ
+Type 55MC “Razorback-MC” - 30 pts (TAC)
+- [D] Reservists - 5 pts
+Aart Section - Infantry
+Type 68B “Bantam-MK” - 25 pts
+- [E] States-Grenadiers - 10 pts
+- [D] States-Grenadiers - 10 pts
+Elmo Section - Infantry
+LaF-18 “Ox” - 10 pts
+- [E] States-Grenadiers - 10 pts
+- [D] Reservists - 5 pts
+Isaac Section - Fire Support
+Type 60 “Grumble” - 10 pts
+- [E] Recoilless Rifle Team - 15 pts
+- [E] Mortar Team - 10 pts
+- [D] States-Grenadiers - 10 pts
+
+PELOTÓN FENDIBLE DE DROMO MARZÍAL
+REVENGERS - 120 PTS, 3 COMMAND
+__________________________
+I. Hemipelotón - Headquarters
+CB.76 “Miséricorde” - 15 pts
+- [D/1] Grenadier Team - 10 pts
+- [D/2] Machine Gun Team - 10 pts
+- [D/3] Baronial Tenants - 0 pts (TACOM)
+II. Hemipelotón - Anti-Tank
+Hexamer - 10 pts
+- [T] Field Gun - 10 pts
+- [1] Santagrine Militia - 5 pts
+- [2] Santagrine Militia - 5 pts
+- [3] Volley Team - 5 pts
+III. Hemipelotón - Fire Support
+Steam Tractor - 5 pts
+- [T] Sb.15 1-lber “Pom-Pom” - 10 pts
+- [1] Santagrine Militia - 5 pts
+- [2] Santagrine Militia - 5 pts
+- [3] Volley Team - 5 pts
+IV. Hemipelotón - Anti-Tank
+Light Gun Team - 5 pts (x2)
+Mounted Serjeants - 10 pts
+Emplacements
+Caballos Bárbaros (x1)
+
+6TH MOTOR RIFLES, “SAVAGE SIX”
+SPECIAL G - 100 PTS
+__________________________
+Type 68C “Appomattox” - 0 pts (TACOM)
+Type 55M “Razorback-M” - 40 pts
+Type 52LW “Firehose” - 30 pts
+Type 68 “Bantam” - 20 pts
+- [E] States-Grenadiers - 10 pts
+
+7E INFANTERIE “CHASSEURS D’ARGENT”
+SOUS-GROUPEMENT D’ASSAUT - 100 PTS
+__________________________
+VBD-1 “Tanner” - 10 pts
+- [E] Company Chief - 0 pts (TACOM)
+VBD-1 “Tanner” - 10 pts (x3)
+- [E] Chasseurs - 10 pts
+VBD-1B “Tanner-R” - 15 pts
+- [E] Hima Team - 15 pts
+
+INTERDICTION ELEMENT LAMASHTU-09
+TASK UNIT 12 - 100 PTS
+__________________________
+S3 “Stoma” - 30 pts (TACOM)
+- [D] Carabiner Horse - 15 pts
+S1 “Synod” - 40 pts
+- [D] Tactical Team - 15 pts
+
+GUARDAESPALDAS DE SEÑOR XINETE
+ESCUADRON PRIMO - 100 PTS
+__________________________
+UNI.28-AC “Don” - 25pts
+UNI.28-05 “Conquistador” - 40 pts
+PEG.60-11 “Squire” - 20 pts
+- [E] Yeoman Paras - 15 pts
+
+
+FUERZAS REGULARES BAUZALERAS
+I. COMPAÑÍA - 400 PTS
+__________________________
+I. Pelotón - Infantry (1)
+Baronial Tenant - 0 pts (TACOM) (x2)
+Light Gun Team - 5 pts (x3)
+- [1] Grenadier Team - 10 pts (x2)
+- [2] Santagrine Militia - 5 pts (x2)
+- [3] Volley Team - 5 pts (x2)
+II. Pelotón - Mortar (2)
+Baronial Tenant - 0 pts (TACOM) (x2)
+Machine Gun Team - 10 pts (x2)
+Bombard Team - 15 pts
+- [1] Grenadier Team - 10 pts (x2)
+- [2] Santagrine Militia - 5 pts (x2)
+- [3] Volley Team - 5 pts (x2)
+I. Artillería - Fire Support (3)
+Field Gun - 10 pts (x4)
+Sb.15 1-lber “Pom-Pom” - 10 pts (x3)
+Sb.18 “Retumbo” - 20 pts (x3)
+War Wagon - 5 pts (x4)
+I. Tropa - Armor (4)
+Hexamer - 10 pts (x4)
+VC.2 “Veldjen” - 20 pts (x2)
+OSM “Mogul” - 40 pts

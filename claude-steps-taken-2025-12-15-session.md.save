@@ -1,0 +1,297 @@
+# Claude Development Session - 2025-12-15
+
+## Session Goal
+Restructure the UI to a new ASCII-art terminal style layout with collapsible example blocks, multi-column layout, autocomplete, and interactive tooltips.
+
+---
+
+## Step 1: Initial Planning & Discussion
+
+### What We Discussed
+1. **Data Source**: Frontend JSON files (no backend for game data)
+   - Will build a PDF → JSON importer tool for creating unit data files
+
+2. **Example Block**: Collapsible into a delineation line
+   - Click the delineation to expand/collapse
+   - Shows army list format with hoverable explanations
+
+3. **ASCII Art**: User will generate, needs dimension specs
+   - Suggested 3 size tiers: 20w, 35w, 60w characters
+   - Will build image → ASCII pipeline tool
+
+4. **Tooltips**: Grid-overlay style with character borders
+   - `++++++` for help/info
+   - `******` for warnings
+   - `======` for stats/data
+
+5. **Animations**: CSS keyframes for blink, JS intervals for typing effects
+
+6. **List Management**: localStorage for guests, email magic links for persistence
+
+### Files Read
+- `TODO.md` - New UI direction requirements
+- `SUMMARY.md` - Previous work and remaining phases
+
+---
+
+## Step 2: Exploring Current Codebase
+
+### Purpose
+Understand existing component structure before making changes.
+
+### Actions Taken
+- [x] Read `frontend/src/components/Terminal/Terminal.tsx`
+- [x] Read `frontend/src/index.css`
+- [x] Read `frontend/src/pages/Home.tsx`
+- [x] Read `frontend/src/components/ArmyForm/ArmyForm.tsx`
+
+### Findings
+
+**Existing Terminal Components (`Terminal.tsx`):**
+- `Terminal` - Main wrapper with CRT overlay, header (BLUEBIRD TERMINAL), footer
+- `Cursor` - Blinking block cursor using CSS animation
+- `Prompt` - Terminal prompt line with `>` prefix and cursor
+- `Message` - Info/success/error/warning messages with `[INFO]`, `[OK]`, etc. prefixes
+- `Box` - Bordered section with optional title using `▓▓` prefix
+- `Separator` - Single line using `─` repeated 76 times
+- `DoubleSeparator` - Double line using `═` repeated 76 times
+
+**Styling (`index.css`):**
+- IBM VGA 8x16 font from int10h.org
+- Amber phosphor color scheme (green alternative commented out)
+- CSS variables for colors: `--terminal-fg`, `--terminal-bg`, `--terminal-dim`, `--terminal-bright`
+- CRT scanlines via fixed overlay with repeating gradient
+- Cursor blink animation: 1s step-end infinite
+- Terminal-styled form inputs, buttons, scrollbars
+- Text selection inverts colors
+
+**Form Structure (`ArmyForm.tsx`):**
+- Uses `react-hook-form` with `useFieldArray` for dynamic groups
+- Default values for factions, tactical groups, units
+- Point tracking with over-cap warning
+- Submits to `/api/lists` endpoint
+- Success state shows shareable URL
+
+---
+
+## Step 3: Building New Components
+
+### Component 1: CollapsibleSection
+
+**File:** `frontend/src/components/Terminal/CollapsibleSection.tsx`
+
+**Purpose:** A section that collapses into a clickable delineation line.
+
+**How It Works:**
+```tsx
+// Props
+interface CollapsibleSectionProps {
+  children: ReactNode;      // Content when expanded
+  label?: string;           // Label in delineation bar
+  defaultExpanded?: boolean;// Start state
+  lineChar?: string;        // Character for line (default '─')
+  width?: number;           // Total width (default 76)
+}
+```
+
+**Visual States:**
+
+Collapsed:
+```
+──────────────────[ ▶ FORMAT EXAMPLE ]──────────────────
+```
+
+Expanded:
+```
+══════════════════[ ▼ FORMAT EXAMPLE ]══════════════════
+  (content here)
+──────────────────────[ COLLAPSE ]──────────────────────
+```
+
+**Key Implementation Details:**
+1. Uses `useState` to track expanded/collapsed state
+2. `createDelineation()` function centers the label with padding on both sides
+3. Collapsed state is a full-width button styled to look like text
+4. Uses CSS transitions for hover effects
+5. Arrow indicators: `▶` collapsed, `▼` expanded
+
+---
+
+### Component 2: GridTooltip
+
+**File:** `frontend/src/components/Terminal/GridTooltip.tsx`
+
+**Purpose:** Monospace tooltip that appears as a text box overlay.
+
+**Variants:**
+- `info` - Uses `+` border
+- `warning` - Uses `*` border
+- `stats` - Uses `=` border
+- `help` - Uses `-` border
+
+**Visual Example (info variant):**
+```
+++++++++++++++++++++++++++++++++
++ This is the tooltip content  +
++ that can wrap across lines.  +
+++++++++++++++++++++++++++++++++
+```
+
+**Key Implementation Details:**
+1. Tracks hover state with `useState`
+2. Uses refs to measure and position tooltip
+3. `wrapText()` function handles word-wrapping to maxWidth
+4. `buildTooltipBox()` constructs the ASCII box string
+5. Positioned via `position: fixed` with calculated top/left
+6. Keeps tooltip within viewport boundaries
+7. Trigger element gets dotted underline on hover
+
+**Also Exports:**
+- `HoverExplain` - Simplified wrapper for inline use
+
+---
+
+### Component 3: ExampleBlock
+
+**File:** `frontend/src/components/Terminal/ExampleBlock.tsx`
+
+**Purpose:** Shows the army list format with hoverable explanations for each part.
+
+**Structure:**
+```
+SECURITY TASK ELEMENT JASPER-15    <- hoverable: explains STE terminology
+EXAMPLE - 100 PTS, 2 COMMAND       <- hoverable: explains points/command
+__________________________
+Task Unit 1 - Headquarters         <- hoverable: explains tactical groups
+P1 "Parallax" - 35 pts             <- hoverable: explains priority deployment
+- [D] Tactical Team - 15 pts       <- hoverable: explains D/E/T designations
+- [E] Node Team - 0 pts (TACOM)    <- hoverable: explains TACOM
+- [T] Automated Sentry - 15 pts
+```
+
+**Key Implementation Details:**
+1. Wraps everything in `CollapsibleSection` (starts collapsed by default)
+2. Each piece of text wrapped in `HoverExplain` with relevant explanation
+3. Uses `variant` prop to categorize tooltip types:
+   - `info` for general explanations
+   - `stats` for numbers/values
+   - `warning` for important designations like D/E/T
+   - `help` for tactical concepts
+4. Includes tip text at bottom: "Hover over highlighted text..."
+
+---
+
+### Step 4: Integrating Components
+
+**Updated:** `frontend/src/components/Terminal/index.ts`
+
+Added exports:
+```ts
+export { CollapsibleSection } from './CollapsibleSection';
+export { GridTooltip, HoverExplain } from './GridTooltip';
+export { ExampleBlock } from './ExampleBlock';
+```
+
+**Updated:** `frontend/src/pages/Home.tsx`
+
+New structure:
+```tsx
+<Terminal>
+  <ExampleBlock />           {/* Collapsible format example */}
+  <DoubleSeparator />
+  <ArmyForm />               {/* Army list entry form */}
+</Terminal>
+```
+
+---
+
+## Step 5: Validation
+
+**TypeScript Check:** `npx tsc --noEmit`
+- Result: ✅ No errors
+
+---
+
+## Technical Notes
+
+### Terminal Grid System
+The terminal aesthetic uses a monospace font where every character occupies the same width. This means we can think of the UI as a character grid.
+
+For a typical terminal width of 120 characters:
+- Column 1 (Army Entry): ~50 chars
+- Column 2 (Unit Info): ~35 chars
+- Column 3 (ASCII Art): ~35 chars
+
+### Box Drawing Characters Reference
+```
+Single line: ─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼
+Double line: ═ ║ ╔ ╗ ╚ ╝ ╠ ╣ ╦ ╩ ╬
+Mixed:       ╒ ╓ ╕ ╖ ╘ ╙ ╛ ╜ ╞ ╟ ╡ ╢ ╤ ╥ ╧ ╨ ╪ ╫
+Shade:       ░ ▒ ▓ █
+Arrows:      ▶ ▼ ◀ ▲
+```
+
+### Delineation Styles for Tooltips
+```
+Info:    +++++++++++++++++++++
+Warning: *********************
+Stats:   =====================
+Help:    ---------------------
+Section: ─────────────────────
+Heavy:   ═════════════════════
+```
+
+### Color Variables (from index.css)
+```css
+--terminal-fg: #FFB000;        /* Main amber text */
+--terminal-bg: #1A1100;        /* Dark background */
+--terminal-dim: #805800;       /* Dimmed text */
+--terminal-bright: #FFCC00;    /* Bright/highlighted text */
+--terminal-glow: rgba(255, 176, 0, 0.15);
+--terminal-glow-strong: rgba(255, 176, 0, 0.3);
+```
+
+---
+
+## Session Log
+
+| Time | Action | Result |
+|------|--------|--------|
+| Start | Read TODO.md and SUMMARY.md | Understood new UI requirements |
+| | Discussion with user | Clarified data source, collapsible behavior, ASCII dimensions |
+| | Glob for existing files | Found 8 .tsx files, 1 .css file |
+| | Read Terminal.tsx | Understood existing components |
+| | Read index.css | Understood styling system |
+| | Read Home.tsx | Simple wrapper using Terminal + ArmyForm |
+| | Read ArmyForm.tsx | Full form with react-hook-form |
+| | Created CollapsibleSection.tsx | Expand/collapse with delineation |
+| | Created GridTooltip.tsx | ASCII box tooltips with variants |
+| | Created ExampleBlock.tsx | Format example with hover explains |
+| | Updated index.ts | Added new exports |
+| | Updated Home.tsx | Added ExampleBlock to layout |
+| | TypeScript check | ✅ No errors |
+| | Updated this documentation | Comprehensive step recording |
+
+---
+
+## Files Created/Modified This Session
+
+### Created
+- `frontend/src/components/Terminal/CollapsibleSection.tsx`
+- `frontend/src/components/Terminal/GridTooltip.tsx`
+- `frontend/src/components/Terminal/ExampleBlock.tsx`
+- `claude-steps-taken-2025-12-15-session.md` (this file)
+
+### Modified
+- `frontend/src/components/Terminal/index.ts` - Added new exports
+- `frontend/src/pages/Home.tsx` - Added ExampleBlock to layout
+
+---
+
+## Next Steps (Pending)
+
+1. **Start Docker environment** to visually test components
+2. **Multi-column layout** - Add side panel for unit info
+3. **Autocomplete input** - Text input with typing animation and suggestions
+4. **Unit data JSON files** - Create structure for faction data
+5. **PDF → JSON importer tool** - Dev tool for converting rulebook text

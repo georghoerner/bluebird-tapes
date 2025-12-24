@@ -1,0 +1,124 @@
+// External tokenizer for multi-line names that end at " - NUMBER PTS"
+@external tokens nameTokenizer from "./tokens.js" { GenName }
+
+@top Document {
+  Header
+  line*
+}
+
+line {
+  TacticalGroup | UnitComplex | BlankLine
+}
+
+BlankLine {
+  LineEnd
+}
+
+Header {
+  FactionLine
+  ArmyInfoLine
+  DelineatorLine
+}
+
+FactionLine {
+  FactionName LineEnd
+}
+
+FactionName {
+  contentChar+
+}
+
+ArmyInfoLine {
+  ArmyName Delineator Number PointsMarker CommandClause? LineEnd
+}
+
+ArmyName {
+  contentChar+
+}
+
+
+CommandClause {
+  Comma Number CommandMarker
+}
+
+TacticalGroup {
+  Name Delineator Name LineEnd
+  UnitComplex*
+  LineEnd
+}
+
+UnitComplex {
+  Unit LineEnd
+  MountedUnitLine*
+}
+
+MountedUnitLine {
+  MountedPrefix Unit LineEnd
+}
+
+MountedPrefix {
+  Delineator mountType
+}
+
+DelineatorLine {
+  DelineatorChar+ LineEnd
+}
+
+Unit {
+  Name Delineator Number PointsMarker TacomDesignator? Multiplier?
+}
+
+TacomDesignator {
+  openParen TacomMarker closeParen
+}
+
+Multiplier {
+  openParen MultiplierMarker Number closeParen
+}
+
+Name {
+  contentChar+
+}
+
+// Example: Multi-line structure using external tokenizer
+// Uncomment and adapt as needed:
+// MultiLineHeader {
+//   GenName Delineator Number PointsMarker CommandClause? LineEnd
+// }
+
+@tokens {
+  @precedence{Delineator, contentChar}
+  @precedence{DelineatorChar, contentChar}
+  @precedence{mountType, contentChar}
+  @precedence{mountType, Delineator}
+  @precedence{mountType, DelineatorChar}
+  @precedence{PointsMarker, contentChar}
+  @precedence{CommandMarker, contentChar}
+  @precedence{TacomMarker, contentChar}
+  @precedence{Number, contentChar}
+  @precedence{Delineator, LineEnd}
+  @precedence{Comma, contentChar}
+  @precedence{MultiplierMarker, contentChar}
+  @precedence{openParen, contentChar}
+  @precedence{closeParen, contentChar}
+
+  LineEnd { "\n" | "\r\n" | "\r" }
+  contentChar { ![\n\r] }
+  mountType {
+    "[E]" | "[D]" | "[T]" |
+    "[e]" | "[d]" | "[t]" |
+    "[1]" | "[2]" | "[3]" | "[4]" | "[5]" | "[6]" | "[7]" | "[8]" | "[9]" | "[0]"
+  }
+  Delineator {
+    " "* DelineatorChar " "+
+  }
+  DelineatorChar { "-" | "=" | "—" | "_"}
+  PointsMarker { "pts" | "PTS" | "POINTS" | "points"}
+  CommandMarker { "cmd" | "CMD" | "COMMAND" | "command" | "Command" }
+  TacomMarker { "TACOM" }
+  MultiplierMarker { "x" | "X" }
+  Number { @digit+ }
+  Comma { "," }
+  openParen { "(" }
+  closeParen { ")" }
+}

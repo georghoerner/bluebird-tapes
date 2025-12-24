@@ -1,0 +1,158 @@
+import { useState, useEffect } from 'react';
+import type { Unit } from './types';
+
+interface AsciiArtPanelProps {
+  unit: Unit | null;
+}
+
+// ASCII format JSON structure (matches ASCII_FORMAT.md spec)
+interface AsciiFormatJson {
+  version: number;
+  unit_id: string;
+  width: number;
+  height: number;
+  fg_palette: string[];
+  bg_palette: string[];
+  data: string[];
+}
+
+// Fixed width for now - TODO: make responsive with user control
+const ASCII_WIDTH = 40;
+
+/**
+ * Parse a row of ASCII data into character entries
+ */
+function parseAsciiRow(row: string): { fgIdx: number; bgIdx: number; char: string }[] {
+  return row.split('|').map(entry => {
+    const parts = entry.split(',');
+    return {
+      fgIdx: parseInt(parts[0]) || 0,
+      bgIdx: parseInt(parts[1]) || 0,
+      char: parts[2] === '\\|' ? '|' : (parts[2] || ' '),
+    };
+  });
+}
+
+/**
+ * Display ASCII art representation of the current unit.
+ * Shows on wide screens only (third column).
+ */
+export function AsciiArtPanel({ unit }: AsciiArtPanelProps) {
+  const [fontSize, setFontSize] = useState(10);
+  const [asciiData, setAsciiData] = useState<AsciiFormatJson | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 18));
+  const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 6));
+
+  // Load ASCII JSON when unit changes
+  useEffect(() => {
+    if (!unit) {
+      setAsciiData(null);
+      setLoadError(false);
+      return;
+    }
+
+    const loadAscii = async () => {
+      try {
+        const response = await fetch(`/unit_ascii/${unit.id}_${ASCII_WIDTH}.json`);
+        if (!response.ok) {
+          throw new Error('Not found');
+        }
+        const data: AsciiFormatJson = await response.json();
+        setAsciiData(data);
+        setLoadError(false);
+      } catch {
+        setAsciiData(null);
+        setLoadError(true);
+      }
+    };
+
+    loadAscii();
+  }, [unit]);
+
+  // No unit selected
+  if (!unit) {
+    return (
+      <div className="border border-[var(--terminal-dim)] h-full flex flex-col">
+        <div className="px-2 py-1 border-b border-[var(--terminal-dim)] flex items-center">
+          <button onClick={decreaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓-▓</button>
+          <span className="text-dim mx-1">VISUAL</span>
+          <button onClick={increaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓+▓</button>
+        </div>
+        <div className="flex-1 flex items-center justify-center p-2">
+          <pre className="text-dim text-center" style={{ fontSize: `${fontSize}px` }}>
+{`
+  _____
+ /     \\
+|  ---  |
+ \\_____/
+   NO
+  DATA
+`}
+          </pre>
+        </div>
+      </div>
+    );
+  }
+
+  // Render loaded ASCII art or error state
+  return (
+    <div className="border border-[var(--terminal-fg)] h-full flex flex-col overflow-hidden">
+      {/* Header with size controls */}
+      <div className="px-2 py-1 border-b border-[var(--terminal-dim)] flex items-center">
+        <button onClick={decreaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓-▓</button>
+        <span className="text-bright terminal-glow mx-1">VISUAL</span>
+        <button onClick={increaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓+▓</button>
+      </div>
+
+      {/* ASCII Art */}
+      <div className="flex-1 flex items-start justify-center p-2 overflow-auto">
+        {loadError || !asciiData ? (
+          <pre className="text-dim text-center" style={{ fontSize: `${fontSize}px` }}>
+{`
+     _____
+    /     \\
+   |  ---  |
+    \\_____/
+
+  NO ASCII
+    DATA
+`}
+          </pre>
+        ) : (
+          <pre
+            className="leading-none whitespace-pre"
+            style={{ fontSize: `${fontSize}px`, lineHeight: 1 }}
+          >
+            {asciiData.data.map((row, rowIdx) => {
+              const entries = parseAsciiRow(row);
+              return (
+                <div key={rowIdx} style={{ height: `${fontSize}px` }}>
+                  {entries.map((entry, colIdx) => (
+                    <span
+                      key={colIdx}
+                      style={{
+                        color: asciiData.fg_palette[entry.fgIdx] || '#FFFFFF',
+                        backgroundColor: asciiData.bg_palette[entry.bgIdx] || 'transparent',
+                      }}
+                    >
+                      {entry.char}
+                    </span>
+                  ))}
+                </div>
+              );
+            })}
+          </pre>
+        )}
+      </div>
+
+      {/* Unit name */}
+      <div className="px-2 py-1 border-t border-[var(--terminal-dim)] text-center">
+        <span className="text-bright truncate block" style={{ fontSize: `${fontSize}px` }}>
+          {unit.displayName}
+        </span>
+      </div>
+    </div>
+  );
+}

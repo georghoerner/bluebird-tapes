@@ -1,0 +1,27 @@
+the following lists are all comma seperated
+an X, Y or Z marks a number that can be variable in it place
+for more clarity, in the stat abbreviations, the variables are surrounded by <>
+
+  List of WEAPON ability keywords:
+Air-Filling, Barrage (X), Barrage (X, Point), Chemical Weapon (X”), Defensive CC, Defensive CC (Inf.), Designator, Discreet, Door Gun (Arc), Guided Missile (X), Heavy Indirect (X), Light Indirect (X), Homing, Ignore Cover (X), Lingering, MCLOS, Melee, Multi-Gun, No CC, No CC (Inf.), Nuclear (X”-Y”-Z”), Radius (X”), Radar Anti-Air, Rally, Rear Attack, Saturating (X), Scoped, Shaped Charge, Small Arm, Smoke (X”), Strafing, Tracking, Tracking (Flak), Turret, Thermal Sights, Underbarrel (X), Undetectable # GENERAL
+<none> # THE FEDERAL STATES-ARMY
+Rally (Salt) # ARMY OF THE EBON FOREST
+<none> # THE NEW RYGOLIC HOST
+# ATOM BARONS OF SANTAGRIA
+
+  List of UNIT ability keywords:
+Afterburner, Amphibious, APS (X+, <Y>), Assault Specialist, Brigade (X, Y”), Chaff-Flares (X), Fearless, Loiter, NBC, Paradrop, PC (X, Arc), Resupply (X), Sense (X”), Tow (X), Watercraft # GENERAL
+Assault Dismount, Chemical-SP (X”), Sprint Motor, Steel Watchbands # THE FEDERAL STATES-ARMY
+Bloodlust, Guidance (X”), Infiltrator,  # ARMY OF THE EBON FOREST
+Active Camouflage, Drone, Hovercraft, Guided Shell, Laser, Round Extruder, Rygonet (X”), Strider # THE NEW RYGOLIC HOST
+Leviathan (X), Flower of the Atom, Tercio # ATOM BARONS OF SANTAGRIA
+
+  List of possible stat abbreviations: 
+(new line for a different field in the ) 
+Inf, Inf (S), Vec, Vec (W), Vec(C), Vec(H), Air, Air (CAS), Air (CAP) 
+H<X>
+S<X>"
+M<X>"
+Q<X>
+T<X>/<Y>/<Z>
+C<X> # this one is optional for TACOMs

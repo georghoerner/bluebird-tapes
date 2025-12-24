@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Prisma
+*.db
+*.db-journal
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+
+# Claude stuff
+claude-pretalk.json
+.claude/
+claude-steps-taken-*.md
+
+# todo folders
+.todo/
+.todos/
+
+# Game IP - not included in repo
+frontend/src/data/factions/*.json
+frontend/public/data/factions/*.json
+frontend/public/unit_images/
+frontend/public/unit_ascii/
+frontend/public/rules/weapon_abilities/*.txt
+frontend/public/rules/unit_abilities/*.txt

@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* IBM VGA 8x16 Font - download from int10h.org */
+@font-face {
+  font-family: 'IBM VGA';
+  src: url('/fonts/Web437_IBM_VGA_8x16.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Terminal Color Scheme - Amber Phosphor (configurable) */
+:root {
+  --terminal-fg: #FFB000;
+  --terminal-bg: #1A1100;
+  --terminal-dim: #805800;
+  --terminal-bright: #FFCC00;
+  --terminal-glow: rgba(255, 176, 0, 0.15);
+  --terminal-glow-strong: rgba(255, 176, 0, 0.3);
+  --scanline-opacity: 0.03;
+}
+
+/* Green Phosphor Alternative (uncomment to use)
+:root {
+  --terminal-fg: #33FF33;
+  --terminal-bg: #001100;
+  --terminal-dim: #006600;
+  --terminal-bright: #66FF66;
+  --terminal-glow: rgba(51, 255, 51, 0.15);
+  --terminal-glow-strong: rgba(51, 255, 51, 0.3);
+  --scanline-opacity: 0.03;
+}
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--terminal-bg);
+  color: var(--terminal-fg);
+  font-family: 'IBM VGA', 'Courier New', monospace;
+  line-height: 1.2;
+  min-height: 100vh;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Disable text anti-aliasing for pixel-perfect font rendering */
+.terminal {
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  image-rendering: pixelated;
+}
+
+/* CRT Scanlines Effect */
+.crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, var(--scanline-opacity)),
+    rgba(0, 0, 0, var(--scanline-opacity)) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+/* Terminal glow effect on text */
+.terminal-glow {
+  text-shadow:
+    0 0 2px var(--terminal-fg),
+    0 0 4px var(--terminal-glow);
+}
+
+/* Blinking cursor */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.cursor-block {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  background-color: var(--terminal-fg);
+  vertical-align: text-bottom;
+}
+
+/* Form inputs - terminal style */
+input, select, textarea {
+  background-color: transparent;
+  border: 1px solid var(--terminal-dim);
+  color: var(--terminal-fg);
+  font-family: 'IBM VGA', 'Courier New', monospace;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--terminal-fg);
+  box-shadow: 0 0 4px var(--terminal-glow);
+}
+
+input::placeholder {
+  color: var(--terminal-dim);
+}
+
+/* Button styling */
+button {
+  background-color: transparent;
+  border: 1px solid var(--terminal-fg);
+  color: var(--terminal-fg);
+  font-family: 'IBM VGA', 'Courier New', monospace;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+button:hover {
+  background-color: var(--terminal-fg);
+  color: var(--terminal-bg);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Box drawing borders */
+.border-terminal {
+  border: 1px solid var(--terminal-fg);
+}
+
+.border-terminal-double {
+  border: 3px double var(--terminal-fg);
+}
+
+/* Dim text */
+.text-dim {
+  color: var(--terminal-dim);
+}
+
+.text-bright {
+  color: var(--terminal-bright);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--terminal-fg);
+  color: var(--terminal-bg);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-dim);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--terminal-dim);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--terminal-fg);
+}
+
+/* Link styling */
+a {
+  color: var(--terminal-bright);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--terminal-fg);
+  text-shadow: 0 0 4px var(--terminal-glow);
+}
+
+/* Utility classes for box-drawing characters */
+.box-top-left::before { content: '┌'; }
+.box-top-right::after { content: '┐'; }
+.box-bottom-left::before { content: '└'; }
+.box-bottom-right::after { content: '┘'; }
+.box-horizontal { border-top: 1px solid var(--terminal-fg); }
+.box-vertical { border-left: 1px solid var(--terminal-fg); }
+
+/* CodeMirror terminal integration */
+@keyframes cm-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@keyframes cm-error-blink {
+  0%, 50% { color: #FF6B6B; }
+  51%, 100% { color: #805800; }
+}
+
+.cm-error-blink {
+  animation: cm-error-blink 0.6s step-end infinite;
+}
+
+.cm-editor .cm-selectionBackground {
+  background-color: var(--terminal-fg) !important;
+}
+
+.cm-editor .cm-content ::selection {
+  background-color: var(--terminal-fg);
+  color: var(--terminal-bg);
+}
+
+/* Cross-faction warning blink animation */
+@keyframes cm-warning-blink {
+  0%, 50% { background-color: rgba(255, 176, 0, 0.3); }
+  51%, 100% { background-color: transparent; }
+}

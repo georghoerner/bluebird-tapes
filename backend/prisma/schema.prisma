@@ -1,0 +1,59 @@
+// Firelock Bluebird - Army List Database Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ArmyList {
+  id            String          @id @default(cuid()) // Short ID for shareable URLs
+  faction       String
+  name          String
+  pointCap      Int
+  commandPoints Int
+  armyKey       String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  tacticalGroups TacticalGroup[]
+
+  @@index([createdAt])
+}
+
+model TacticalGroup {
+  id            String    @id @default(uuid())
+  armyListId    String
+  groupName     String
+  groupFunction String
+  groupNumber   Int
+  sortOrder     Int       @default(0)
+
+  armyList      ArmyList  @relation(fields: [armyListId], references: [id], onDelete: Cascade)
+  units         Unit[]
+
+  @@index([armyListId])
+}
+
+enum UnitDesignation {
+  E  // Essential
+  D  // Dedicated
+  T  // Transport
+}
+
+model Unit {
+  id               String           @id @default(uuid())
+  tacticalGroupId  String
+  designation      UnitDesignation?
+  unitName         String
+  pointCost        Int
+  tacomDesignation String
+  sortOrder        Int              @default(0)
+
+  tacticalGroup    TacticalGroup    @relation(fields: [tacticalGroupId], references: [id], onDelete: Cascade)
+
+  @@index([tacticalGroupId])
+}
