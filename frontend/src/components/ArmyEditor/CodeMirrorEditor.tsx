@@ -16,6 +16,7 @@ import type { FactionDataConfig } from './validation';
 import type { AutocompleteItem, FactionData, Unit } from './types';
 import { MOUNTING_MODES } from './types';
 import { parser } from '../../utils/armyListParser/parser.js';
+import { matchFactionByAlias } from '../../hooks/useFactionData';
 
 interface CodeMirrorEditorProps {
   maxWidth?: number;
@@ -225,12 +226,23 @@ export function CodeMirrorEditor({
     }
 
     // Check for faction input (first few lines)
-    if (lines.length === 1 && !selectedFaction) {
+    if (lines.length === 1 && !selectedFaction && currentLine.length >= 2) {
+      // First check for alias match
+      const aliasMatch = matchFactionByAlias(currentLine);
+      if (aliasMatch) {
+        const matchedFaction = factions.find(f => f.id === aliasMatch);
+        if (matchedFaction) {
+          showFactionDropdown([matchedFaction], cursorPos, currentLine, view);
+          return;
+        }
+      }
+
+      // Fall back to name/id matching
       const factionMatches = factions.filter(f =>
         f.name.toLowerCase().includes(currentLine.toLowerCase()) ||
         f.id.toLowerCase().includes(currentLine.toLowerCase())
       );
-      if (factionMatches.length > 0 && currentLine.length >= 2) {
+      if (factionMatches.length > 0) {
         showFactionDropdown(factionMatches, cursorPos, currentLine, view);
         return;
       }
