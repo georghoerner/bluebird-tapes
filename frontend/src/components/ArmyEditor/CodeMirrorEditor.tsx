@@ -257,7 +257,13 @@ export function CodeMirrorEditor({
       const cleanLine = currentLine.replace(/^-\s*\[[DET0-9]\]\s*/i, '');
       if (cleanLine.length >= 2) {
         const allMatches: Unit[] = [];
-        for (const faction of factions) {
+
+        // Filter by selected faction (unless 'all' or no faction selected)
+        const factionsToSearch = (selectedFaction && selectedFaction !== 'all')
+          ? factions.filter(f => f.id === selectedFaction)
+          : factions.filter(f => f.id !== 'all'); // Exclude 'all' pseudo-faction
+
+        for (const faction of factionsToSearch) {
           const factionData = getFactionData(faction.id);
           if (factionData) {
             const matches = factionData.units.filter(u =>
