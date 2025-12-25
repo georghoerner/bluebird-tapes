@@ -375,10 +375,7 @@ export function CodeMirrorEditor({
         const content = update.state.doc.toString();
         const cursorPos = update.state.selection.main.head;
         updateCursorUnit(content, cursorPos);
-
-        if (update.docChanged) {
-          checkAutocompleteRef.current(content, cursorPos, update.view);
-        }
+        // Autocomplete now triggered by Ctrl+Space instead of on every keystroke
       }
     });
 
@@ -402,8 +399,17 @@ export function CodeMirrorEditor({
           '&': { fontSize: `${fontSize}px` },
           '.cm-content': { fontSize: `${fontSize}px` },
         })),
-        // High-precedence keymap for dropdown navigation (must run before default handlers)
+        // High-precedence keymap for dropdown navigation and autocomplete trigger
         Prec.highest(keymap.of([
+          {
+            key: 'Ctrl-Space',
+            run: (view) => {
+              const content = view.state.doc.toString();
+              const cursorPos = view.state.selection.main.head;
+              checkAutocompleteRef.current(content, cursorPos, view);
+              return true;
+            },
+          },
           {
             key: 'ArrowDown',
             run: () => {
