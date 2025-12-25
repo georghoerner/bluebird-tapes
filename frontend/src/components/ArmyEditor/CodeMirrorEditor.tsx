@@ -93,6 +93,9 @@ export function CodeMirrorEditor({
     const selectedFactionUnits = new Set<string>();
 
     for (const faction of factions) {
+      // Skip 'all' pseudo-faction (no JSON data)
+      if (faction.id === 'all') continue;
+
       const data = getFactionData(faction.id);
       if (data) {
         for (const unit of data.units) {
@@ -112,7 +115,8 @@ export function CodeMirrorEditor({
           }
 
           // Track selected faction units
-          if (selectedFaction && faction.id === selectedFaction) {
+          // When 'all' is selected, ALL units are valid (no cross-faction warnings)
+          if (selectedFaction === 'all' || (selectedFaction && faction.id === selectedFaction)) {
             selectedFactionUnits.add(normalized);
             selectedFactionUnits.add(displayNormalized);
           }

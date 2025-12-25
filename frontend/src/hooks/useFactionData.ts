@@ -3,6 +3,7 @@ import type { FactionData } from '../components/ArmyEditor/types';
 
 // Available factions
 const AVAILABLE_FACTIONS = [
+  { id: 'all', name: 'ALL FACTIONS' },
   { id: 'federal_states', name: 'Federal States-Army' },
   { id: 'atom_barons', name: 'The Atom Barons of Santagira' },
   { id: 'ebon_forest', name: 'The Army of the Ebon Forest' },
@@ -11,6 +12,7 @@ const AVAILABLE_FACTIONS = [
 
 // Faction aliases for case-insensitive matching
 const FACTION_ALIASES: Record<string, string[]> = {
+  all: ['ALL', 'All Factions', 'Any', 'Mixed'],
   federal_states: [
     'FSA', 'F.S.A.', 'F.S-A.', 'Fed', 'Federal', 'Federal States',
     'Intermarine Federation', 'Federation', 'Cydoland', 'Vansa',
@@ -69,6 +71,8 @@ export function useFactionData() {
 
   // Load a faction's data
   const loadFaction = useCallback(async (factionId: string) => {
+    // Skip 'all' pseudo-faction (no JSON file)
+    if (factionId === 'all') return;
     if (cache[factionId] || loading[factionId]) return;
 
     setLoading(prev => ({ ...prev, [factionId]: true }));
