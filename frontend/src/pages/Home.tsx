@@ -11,7 +11,7 @@ import { useFactionData } from '../hooks/useFactionData';
 
 export function Home() {
   const [currentUnit, setCurrentUnit] = useState<Unit | null>(null);
-  const { factions, getFactionData } = useFactionData();
+  const { factions, getFactionData, isLoading, getError } = useFactionData();
 
   return (
     <Terminal>
@@ -27,6 +27,8 @@ export function Home() {
             factions={factions}
             getFactionData={getFactionData}
             onCursorUnitChange={setCurrentUnit}
+            isLoading={isLoading}
+            getError={getError}
           />
         }
         unitInfo={<UnitInfoPanel unit={currentUnit} />}

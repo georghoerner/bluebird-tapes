@@ -6,6 +6,9 @@ import { factionDataFacet } from './validationFacet';
 import { validateDocument } from './validators';
 import type { ValidationResult } from './types';
 
+// Debounce delay in milliseconds
+const VALIDATION_DEBOUNCE_MS = 200;
+
 // Gutter markers for validation errors
 class ErrorGutterMarker extends GutterMarker {
   toDOM() {
@@ -28,8 +31,10 @@ class WarningGutterMarker extends GutterMarker {
 }
 
 class TransportGutterMarker extends GutterMarker {
-  constructor(private message: string) {
+  message: string;
+  constructor(message: string) {
     super();
+    this.message = message;
   }
   toDOM() {
     const span = document.createElement('span');
@@ -85,12 +90,15 @@ const transportErrorMark = Decoration.mark({
 /**
  * ViewPlugin that validates the document and creates decorations
  * for invalid unit names and structural errors.
+ * Uses debouncing to avoid expensive validation on every keystroke.
  */
 export const validationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet;
+    debounceTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(view: EditorView) {
+      // Initial validation runs immediately (no debounce on first load)
       const result = this.runValidation(view);
       this.decorations = this.buildDecorations(result);
       // Schedule the result dispatch for after construction
@@ -99,10 +107,23 @@ export const validationPlugin = ViewPlugin.fromClass(
 
     update(update: ViewUpdate) {
       if (update.docChanged || this.facetChanged(update)) {
-        const result = this.runValidation(update.view);
-        this.decorations = this.buildDecorations(result);
-        // Schedule to avoid infinite loops
-        setTimeout(() => this.dispatchResult(update.view, result), 0);
+        // Clear any pending validation
+        if (this.debounceTimer) {
+          clearTimeout(this.debounceTimer);
+        }
+
+        // Debounce validation to avoid running on every keystroke
+        this.debounceTimer = setTimeout(() => {
+          const result = this.runValidation(update.view);
+          this.decorations = this.buildDecorations(result);
+          this.dispatchResult(update.view, result);
+        }, VALIDATION_DEBOUNCE_MS);
+      }
+    }
+
+    destroy() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer);
       }
     }
 

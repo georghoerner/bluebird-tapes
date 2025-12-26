@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { FactionData } from '../components/ArmyEditor/types';
 
 // Available factions
@@ -69,11 +69,17 @@ export function useFactionData() {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Track which factions we've started loading (prevents duplicate fetches)
+  const loadAttempted = useRef<Set<string>>(new Set());
+
   // Load a faction's data
   const loadFaction = useCallback(async (factionId: string) => {
     // Skip 'all' pseudo-faction (no JSON file)
     if (factionId === 'all') return;
-    if (cache[factionId] || loading[factionId]) return;
+
+    // Skip if already attempted (use ref to avoid dependency issues)
+    if (loadAttempted.current.has(factionId)) return;
+    loadAttempted.current.add(factionId);
 
     setLoading(prev => ({ ...prev, [factionId]: true }));
 
@@ -92,14 +98,14 @@ export function useFactionData() {
     } finally {
       setLoading(prev => ({ ...prev, [factionId]: false }));
     }
-  }, [cache, loading]);
+  }, []); // No dependencies - uses ref for tracking
 
   // Get faction data (returns null if not loaded)
   const getFactionData = useCallback((factionId: string): FactionData | null => {
     return cache[factionId] || null;
   }, [cache]);
 
-  // Preload all factions
+  // Preload all factions on mount (runs only once)
   useEffect(() => {
     AVAILABLE_FACTIONS.forEach(f => loadFaction(f.id));
   }, [loadFaction]);

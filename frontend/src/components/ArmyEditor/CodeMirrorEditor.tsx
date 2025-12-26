@@ -3,6 +3,7 @@ import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { EditorState, Compartment, Prec } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { TerminalDropdown } from './TerminalDropdown';
+import { DebugPanel } from './DebugPanel';
 import { terminalTheme, terminalSyntaxHighlighting } from './terminalTheme';
 import { armyList } from './armyListLanguage';
 import { pointsDecorationPlugin } from './pointsDecoration';
@@ -26,6 +27,8 @@ interface CodeMirrorEditorProps {
   getFactionData: (factionId: string) => FactionData | null;
   onCursorUnitChange?: (unit: Unit | null) => void;
   onTextChange?: (text: string) => void;
+  isLoading?: (id: string) => boolean;
+  getError?: (id: string) => string | null;
 }
 
 const PLACEHOLDER_TEXT = `Enter faction name to begin...
@@ -51,12 +54,17 @@ export function CodeMirrorEditor({
   getFactionData,
   onCursorUnitChange,
   onTextChange,
+  isLoading,
+  getError,
 }: CodeMirrorEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [fontSize, setFontSize] = useState(16);
   const [text, setText] = useState('');
   const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
+  const [debugMode, setDebugMode] = useState(false);
+  const [validationErrors, _setValidationErrors] = useState<Array<{ line: number; message: string; type: string }>>([]);
+  // TODO: Hook up validation errors from CodeMirror state to _setValidationErrors
 
   // Autocomplete state
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -558,10 +566,18 @@ export function CodeMirrorEditor({
       <div className="flex text-xs">
         <span className="text-dim">{BOX.vertical}</span>
         <div className="flex-1 px-1 flex justify-between items-center">
-          <span className="flex items-center">
-            <button onClick={decreaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[-]</button>
-            <span className="text-bright terminal-glow mx-1">SIZE</span>
-            <button onClick={increaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[+]</button>
+          <span className="flex items-center gap-2">
+            <span className="flex items-center">
+              <button onClick={decreaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[-]</button>
+              <span className="text-bright terminal-glow mx-1">SIZE</span>
+              <button onClick={increaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[+]</button>
+            </span>
+            <button
+              onClick={() => setDebugMode(!debugMode)}
+              className={`bg-transparent border-0 p-0 m-0 cursor-pointer ${debugMode ? 'text-green-500' : 'text-dim'} hover:text-bright`}
+            >
+              [DBG]
+            </button>
           </span>
           <span className="text-dim">{factionText}</span>
         </div>
@@ -614,6 +630,26 @@ export function CodeMirrorEditor({
 
       {/* Bottom border */}
       <div className="text-dim whitespace-pre text-xs">{bottomBorder}</div>
+
+      {/* Debug Panel */}
+      {debugMode && (
+        <DebugPanel
+          text={text}
+          selectedFaction={selectedFaction}
+          factionLoadingStatus={factions.reduce((acc, f) => {
+            if (f.id === 'all') return acc;
+            const data = getFactionData(f.id);
+            const loading = isLoading?.(f.id) ?? false;
+            const error = getError?.(f.id) ?? null;
+            acc[f.id] = {
+              loaded: !!data,
+              error: error || (!data && !loading ? 'Not loaded' : undefined),
+            };
+            return acc;
+          }, {} as Record<string, { loaded: boolean; error?: string }>)}
+          validationErrors={validationErrors}
+        />
+      )}
     </div>
   );
 }
