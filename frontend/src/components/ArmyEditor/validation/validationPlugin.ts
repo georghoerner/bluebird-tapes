@@ -11,7 +11,7 @@ const setValidationResult = StateEffect.define<ValidationResult>();
 // StateField to store validation results (accessible by tooltip)
 export const validationResultField = StateField.define<ValidationResult>({
   create() {
-    return { unitValidations: [], structuralErrors: [] };
+    return { unitValidations: [], structuralErrors: [], transportErrors: [] };
   },
   update(value, tr) {
     for (const effect of tr.effects) {
@@ -37,6 +37,11 @@ const crossFactionMark = Decoration.mark({
 const structuralErrorMark = Decoration.mark({
   class: 'cm-validation-structural',
   attributes: { 'data-validation': 'structural' },
+});
+
+const transportErrorMark = Decoration.mark({
+  class: 'cm-validation-transport',
+  attributes: { 'data-validation': 'transport' },
 });
 
 /**
@@ -117,6 +122,17 @@ export const validationPlugin = ViewPlugin.fromClass(
             from: error.from,
             to: error.to,
             value: structuralErrorMark,
+          });
+        }
+      }
+
+      // Add transport error decorations
+      for (const error of result.transportErrors) {
+        if (error.to > error.from) {
+          decorations.push({
+            from: error.from,
+            to: error.to,
+            value: transportErrorMark,
           });
         }
       }

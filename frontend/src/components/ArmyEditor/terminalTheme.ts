@@ -85,6 +85,11 @@ export const terminalTheme = EditorView.theme({
     textDecoration: 'underline wavy',
     textDecorationColor: colors.error,
   },
+  '.cm-validation-transport': {
+    textDecoration: 'underline wavy',
+    textDecorationColor: colors.error,
+    backgroundColor: 'rgba(255, 107, 107, 0.15)',
+  },
   // Validation tooltip styles
   '.cm-tooltip.cm-tooltip-hover': {
     backgroundColor: colors.bg,

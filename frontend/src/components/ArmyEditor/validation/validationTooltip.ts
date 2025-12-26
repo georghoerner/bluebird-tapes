@@ -1,12 +1,12 @@
 import { hoverTooltip, EditorView } from '@codemirror/view';
 import type { Tooltip } from '@codemirror/view';
 import { validationResultField } from './validationPlugin';
-import type { UnitValidation } from './types';
+import type { UnitValidation, TransportError } from './types';
 
 /**
- * Create DOM element for the validation tooltip.
+ * Create DOM element for unit validation tooltip.
  */
-function createTooltipDOM(validation: UnitValidation): HTMLElement {
+function createUnitTooltipDOM(validation: UnitValidation): HTMLElement {
   const dom = document.createElement('div');
   dom.className = 'cm-validation-tooltip';
 
@@ -38,7 +38,22 @@ function createTooltipDOM(validation: UnitValidation): HTMLElement {
 }
 
 /**
- * Hover tooltip extension that shows validation info for invalid units.
+ * Create DOM element for transport error tooltip.
+ */
+function createTransportTooltipDOM(error: TransportError): HTMLElement {
+  const dom = document.createElement('div');
+  dom.className = 'cm-validation-tooltip';
+
+  const message = document.createElement('div');
+  message.className = 'cm-validation-tooltip-warning';
+  message.textContent = error.message;
+  dom.appendChild(message);
+
+  return dom;
+}
+
+/**
+ * Hover tooltip extension that shows validation info for invalid units and transport errors.
  */
 export const validationTooltip = hoverTooltip(
   (view: EditorView, pos: number, _side: -1 | 1): Tooltip | null => {
@@ -46,7 +61,23 @@ export const validationTooltip = hoverTooltip(
 
     if (!result) return null;
 
-    // Find validation at hover position
+    // Check for transport errors first (they take priority)
+    const transportError = result.transportErrors.find(
+      (e) => pos >= e.from && pos <= e.to
+    );
+
+    if (transportError) {
+      return {
+        pos: transportError.from,
+        end: transportError.to,
+        above: true,
+        create() {
+          return { dom: createTransportTooltipDOM(transportError) };
+        },
+      };
+    }
+
+    // Find unit validation at hover position
     const validation = result.unitValidations.find(
       (v) =>
         pos >= v.from &&
@@ -66,7 +97,7 @@ export const validationTooltip = hoverTooltip(
       end: validation.to,
       above: true,
       create() {
-        return { dom: createTooltipDOM(validation) };
+        return { dom: createUnitTooltipDOM(validation) };
       },
     };
   },

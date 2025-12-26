@@ -39,7 +39,18 @@ export interface StructuralError {
   message: string;
 }
 
+export interface TransportError {
+  type: 'no-vehicle' | 'invalid-desant' | 'invalid-embark' | 'invalid-tow' | 'capacity-exceeded';
+  from: number;
+  to: number;
+  message: string;
+  mountType: 'D' | 'E' | 'T';
+  unitName: string;
+  vehicleName?: string;
+}
+
 export interface ValidationResult {
   unitValidations: UnitValidation[];
   structuralErrors: StructuralError[];
+  transportErrors: TransportError[];
 }
