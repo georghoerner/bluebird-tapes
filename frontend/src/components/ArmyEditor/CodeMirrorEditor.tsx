@@ -17,6 +17,7 @@ import type { AutocompleteItem, FactionData, Unit } from './types';
 import { MOUNTING_MODES } from './types';
 import { parser } from '../../utils/armyListParser/parser.js';
 import { matchFactionByAlias } from '../../hooks/useFactionData';
+import { normalizeForComparison } from './utils/normalize';
 
 interface CodeMirrorEditorProps {
   maxWidth?: number;
@@ -100,12 +101,12 @@ export function CodeMirrorEditor({
       if (data) {
         for (const unit of data.units) {
           // Index by normalized name
-          const normalized = unit.name.toLowerCase().trim();
+          const normalized = normalizeForComparison(unit.name);
           allUnits.set(normalized, unit);
           unitToFaction.set(normalized, faction.id);
 
           // Also index by displayName if different
-          const displayNormalized = unit.displayName.toLowerCase().trim();
+          const displayNormalized = normalizeForComparison(unit.displayName);
           if (displayNormalized !== normalized) {
             // Only add if not already present (prioritize name over displayName)
             if (!allUnits.has(displayNormalized)) {
@@ -186,13 +187,15 @@ export function CodeMirrorEditor({
     const currentLineEnd = lineEndOffset === -1 ? content.length : cursorPos + lineEndOffset;
     const currentLine = content.substring(currentLineStart, currentLineEnd);
 
+    const normalizedLine = normalizeForComparison(currentLine);
+
     // First check selected faction (prioritize for ambiguous names)
-    if (selectedFaction) {
+    if (selectedFaction && selectedFaction !== 'all') {
       const factionData = getFactionData(selectedFaction);
       if (factionData) {
         for (const unit of factionData.units) {
-          if (currentLine.toLowerCase().includes(unit.name.toLowerCase()) ||
-              currentLine.toLowerCase().includes(unit.displayName.toLowerCase())) {
+          if (normalizedLine.includes(normalizeForComparison(unit.name)) ||
+              normalizedLine.includes(normalizeForComparison(unit.displayName))) {
             onCursorUnitChange?.(unit);
             return;
           }
@@ -202,12 +205,13 @@ export function CodeMirrorEditor({
 
     // Then search other factions
     for (const faction of factions) {
+      if (faction.id === 'all') continue; // Skip pseudo-faction
       if (faction.id === selectedFaction) continue; // Already checked
       const factionData = getFactionData(faction.id);
       if (factionData) {
         for (const unit of factionData.units) {
-          if (currentLine.toLowerCase().includes(unit.name.toLowerCase()) ||
-              currentLine.toLowerCase().includes(unit.displayName.toLowerCase())) {
+          if (normalizedLine.includes(normalizeForComparison(unit.name)) ||
+              normalizedLine.includes(normalizeForComparison(unit.displayName))) {
             onCursorUnitChange?.(unit);
             return;
           }
@@ -263,12 +267,13 @@ export function CodeMirrorEditor({
           ? factions.filter(f => f.id === selectedFaction)
           : factions.filter(f => f.id !== 'all'); // Exclude 'all' pseudo-faction
 
+        const normalizedCleanLine = normalizeForComparison(cleanLine);
         for (const faction of factionsToSearch) {
           const factionData = getFactionData(faction.id);
           if (factionData) {
             const matches = factionData.units.filter(u =>
-              u.name.toLowerCase().includes(cleanLine.toLowerCase()) ||
-              u.displayName.toLowerCase().includes(cleanLine.toLowerCase())
+              normalizeForComparison(u.name).includes(normalizedCleanLine) ||
+              normalizeForComparison(u.displayName).includes(normalizedCleanLine)
             );
             allMatches.push(...matches);
           }

@@ -6,15 +6,9 @@ import type {
   StructuralError,
 } from './types';
 import { fuzzyMatchUnits } from './fuzzyMatch';
+import { normalizeUnitName } from '../utils/normalize';
 
 const CUSTOM_PREFIX = 'custom:';
-
-/**
- * Normalize a unit name for comparison.
- */
-function normalizeUnitName(name: string): string {
-  return name.toLowerCase().trim();
-}
 
 /**
  * Extract unit name from a unit line text.
