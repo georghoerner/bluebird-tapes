@@ -118,26 +118,33 @@ interface BoxProps {
   variant?: 'double' | 'single';
 }
 
-export function Box({ title, children, className = '', width = 40, variant = 'double' }: BoxProps) {
+export function Box({ title, children, className = '', width, variant = 'double' }: BoxProps) {
   const chars = variant === 'double'
     ? { tl: BOX.topLeft, tr: BOX.topRight, bl: BOX.bottomLeft, br: BOX.bottomRight, h: BOX.horizontal, v: BOX.vertical }
     : { tl: BOX.sTopLeft, tr: BOX.sTopRight, bl: BOX.sBottomLeft, br: BOX.sBottomRight, h: BOX.sHorizontal, v: BOX.sVertical };
 
-  const innerWidth = width - 2;
+  // If width is specified, use character-based sizing; otherwise use full width
+  const useFixedWidth = width !== undefined;
+  const innerWidth = useFixedWidth ? width - 2 : 76; // Default 78 chars total (76 inner)
+
   const topBorder = title
     ? `${chars.tl}${chars.h}${chars.h}[ ${title} ]${chars.h.repeat(Math.max(0, innerWidth - title.length - 6))}${chars.tr}`
     : `${chars.tl}${chars.h.repeat(innerWidth)}${chars.tr}`;
   const bottomBorder = `${chars.bl}${chars.h.repeat(innerWidth)}${chars.br}`;
 
+  const containerStyle = useFixedWidth
+    ? { width: `${width}ch`, maxWidth: '100%' }
+    : { width: '100%' };
+
   return (
-    <div className={`font-mono ${className}`}>
-      <div className="text-dim whitespace-pre">{topBorder}</div>
-      <div className="flex">
-        <span className="text-dim">{chars.v}</span>
-        <div className="flex-1 px-1">{children}</div>
-        <span className="text-dim">{chars.v}</span>
+    <div className={`font-mono ${className}`} style={containerStyle}>
+      <div className="text-dim whitespace-pre overflow-hidden">{topBorder}</div>
+      <div className="flex min-h-[1.5em]">
+        <span className="text-dim flex-shrink-0">{chars.v}</span>
+        <div className="flex-1 px-1 overflow-hidden">{children}</div>
+        <span className="text-dim flex-shrink-0">{chars.v}</span>
       </div>
-      <div className="text-dim whitespace-pre">{bottomBorder}</div>
+      <div className="text-dim whitespace-pre overflow-hidden">{bottomBorder}</div>
     </div>
   );
 }
