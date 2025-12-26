@@ -50,9 +50,28 @@ export const terminalTheme = EditorView.theme({
   '.cm-activeLineGutter': {
     backgroundColor: 'transparent',
   },
-  // Hide gutters by default
+  // Error gutter styling
   '.cm-gutters': {
-    display: 'none',
+    backgroundColor: 'transparent',
+    border: 'none',
+    width: '20px',
+  },
+  '.cm-gutter-error': {
+    width: '16px',
+  },
+  '.cm-error-marker': {
+    color: colors.error,
+    fontSize: '12px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    cursor: 'default',
+  },
+  '.cm-warning-marker': {
+    color: colors.bright,
+    fontSize: '12px',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    cursor: 'default',
   },
   // Scrollbar styling
   '.cm-scroller': {

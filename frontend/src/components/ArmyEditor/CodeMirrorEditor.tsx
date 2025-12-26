@@ -11,6 +11,7 @@ import {
   validationPlugin,
   validationResultField,
   validationTooltip,
+  errorGutter,
 } from './validation';
 import type { FactionDataConfig } from './validation';
 import type { AutocompleteItem, FactionData, Unit } from './types';
@@ -420,6 +421,7 @@ export function CodeMirrorEditor({
         validationResultField,
         validationPlugin,
         validationTooltip,
+        errorGutter,
         placeholder(PLACEHOLDER_TEXT),
         updateListener,
         fontSizeCompartment.current.of(EditorView.theme({
