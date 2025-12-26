@@ -87,22 +87,57 @@ export function Message({ type = 'info', children }: MessageProps) {
   );
 }
 
-// Box component for bordered sections
+// Box-drawing character constants
+export const BOX = {
+  topLeft: '╔',
+  topRight: '╗',
+  bottomLeft: '╚',
+  bottomRight: '╝',
+  horizontal: '═',
+  vertical: '║',
+  teeRight: '╠',
+  teeLeft: '╣',
+  teeDown: '╦',
+  teeUp: '╩',
+  cross: '╬',
+  // Single-line variants
+  sTopLeft: '┌',
+  sTopRight: '┐',
+  sBottomLeft: '└',
+  sBottomRight: '┘',
+  sHorizontal: '─',
+  sVertical: '│',
+};
+
+// Box component for bordered sections using Unicode box-drawing
 interface BoxProps {
   title?: string;
   children: ReactNode;
   className?: string;
+  width?: number;
+  variant?: 'double' | 'single';
 }
 
-export function Box({ title, children, className = '' }: BoxProps) {
+export function Box({ title, children, className = '', width = 40, variant = 'double' }: BoxProps) {
+  const chars = variant === 'double'
+    ? { tl: BOX.topLeft, tr: BOX.topRight, bl: BOX.bottomLeft, br: BOX.bottomRight, h: BOX.horizontal, v: BOX.vertical }
+    : { tl: BOX.sTopLeft, tr: BOX.sTopRight, bl: BOX.sBottomLeft, br: BOX.sBottomRight, h: BOX.sHorizontal, v: BOX.sVertical };
+
+  const innerWidth = width - 2;
+  const topBorder = title
+    ? `${chars.tl}${chars.h}${chars.h}[ ${title} ]${chars.h.repeat(Math.max(0, innerWidth - title.length - 6))}${chars.tr}`
+    : `${chars.tl}${chars.h.repeat(innerWidth)}${chars.tr}`;
+  const bottomBorder = `${chars.bl}${chars.h.repeat(innerWidth)}${chars.br}`;
+
   return (
-    <div className={`border border-[var(--terminal-fg)] p-4 ${className}`}>
-      {title && (
-        <div className="text-bright mb-2 terminal-glow">
-          {'▓▓ '}{title}{' ▓▓'}
-        </div>
-      )}
-      {children}
+    <div className={`font-mono ${className}`}>
+      <div className="text-dim whitespace-pre">{topBorder}</div>
+      <div className="flex">
+        <span className="text-dim">{chars.v}</span>
+        <div className="flex-1 px-1">{children}</div>
+        <span className="text-dim">{chars.v}</span>
+      </div>
+      <div className="text-dim whitespace-pre">{bottomBorder}</div>
     </div>
   );
 }

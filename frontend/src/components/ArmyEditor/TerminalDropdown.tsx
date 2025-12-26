@@ -1,6 +1,18 @@
 import { useEffect, useRef } from 'react';
 import type { AutocompleteItem } from './types';
 
+// Box-drawing characters for dropdown
+const BOX = {
+  topLeft: '╔',
+  topRight: '╗',
+  bottomLeft: '╚',
+  bottomRight: '╝',
+  horizontal: '═',
+  vertical: '║',
+  teeRight: '╠',
+  teeLeft: '╣',
+};
+
 interface TerminalDropdownProps {
   items: AutocompleteItem[];
   selectedIndex: number;
@@ -12,7 +24,7 @@ interface TerminalDropdownProps {
 
 /**
  * Terminal-style dropdown for autocomplete suggestions.
- * Styled to look like a retro terminal menu.
+ * Uses Unicode box-drawing characters for authentic retro look.
  */
 export function TerminalDropdown({
   items,
@@ -52,53 +64,70 @@ export function TerminalDropdown({
 
   if (!visible || items.length === 0) return null;
 
+  const width = 36;
+  const innerWidth = width - 2;
+  const headerText = ' SELECT OPTION ';
+  const topBorder = `${BOX.topLeft}${BOX.horizontal.repeat(Math.floor((innerWidth - headerText.length) / 2))}${headerText}${BOX.horizontal.repeat(Math.ceil((innerWidth - headerText.length) / 2))}${BOX.topRight}`;
+  const divider = `${BOX.teeRight}${BOX.horizontal.repeat(innerWidth)}${BOX.teeLeft}`;
+  const bottomBorder = `${BOX.bottomLeft}${BOX.horizontal.repeat(innerWidth)}${BOX.bottomRight}`;
+
   return (
     <div
       ref={dropdownRef}
-      className="fixed z-50 border border-[var(--terminal-fg)] bg-[var(--terminal-bg)] shadow-lg max-h-48 overflow-y-auto"
+      className="fixed z-50 bg-[var(--terminal-bg)] shadow-lg font-mono"
       style={{
         top: position.top,
         left: position.left,
-        minWidth: '200px',
-        maxWidth: '400px',
       }}
     >
-      {/* Header bar */}
-      <div className="px-2 py-1 border-b border-[var(--terminal-dim)] text-dim text-xs">
-        {'>'} SELECT OPTION {'<'}
+      {/* Top border with header */}
+      <div className="text-dim whitespace-pre text-xs">{topBorder}</div>
+
+      {/* Scrollable items container */}
+      <div className="max-h-40 overflow-y-auto">
+        {items.map((item, index) => {
+          const isSelected = index === selectedIndex;
+          return (
+            <div
+              key={`${item.type}-${item.value}-${index}`}
+              data-selected={isSelected}
+              onClick={() => onSelect(item)}
+              className="flex cursor-pointer text-sm"
+            >
+              <span className="text-dim">{BOX.vertical}</span>
+              <div
+                className={`flex-1 px-1 ${
+                  isSelected
+                    ? 'bg-[var(--terminal-fg)] text-[var(--terminal-bg)]'
+                    : 'hover:bg-[var(--terminal-glow)]'
+                }`}
+              >
+                <span className={isSelected ? '' : 'text-dim'}>
+                  {item.type === 'faction' ? '[F]' : item.type === 'mounting' ? '[M]' : '[U]'}
+                </span>
+                <span className="ml-1">{item.label}</span>
+                {item.data?.points !== undefined && (
+                  <span className={`ml-1 ${isSelected ? '' : 'text-dim'}`}>({item.data.points})</span>
+                )}
+              </div>
+              <span className="text-dim">{BOX.vertical}</span>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Items */}
-      {items.map((item, index) => {
-        const isSelected = index === selectedIndex;
-        return (
-          <div
-            key={`${item.type}-${item.value}-${index}`}
-            data-selected={isSelected}
-            onClick={() => onSelect(item)}
-            className={`
-              px-2 py-1 cursor-pointer text-sm
-              ${isSelected
-                ? 'bg-[var(--terminal-fg)] text-[var(--terminal-bg)]'
-                : 'hover:bg-[var(--terminal-glow)]'
-              }
-            `}
-          >
-            <span className="text-dim mr-2">
-              {item.type === 'faction' ? '[F]' : item.type === 'mounting' ? '[M]' : '[U]'}
-            </span>
-            <span>{item.label}</span>
-            {item.data?.points !== undefined && (
-              <span className="ml-2 text-dim">({item.data.points} pts)</span>
-            )}
-          </div>
-        );
-      })}
+      {/* Divider */}
+      <div className="text-dim whitespace-pre text-xs">{divider}</div>
 
       {/* Footer */}
-      <div className="px-2 py-1 border-t border-[var(--terminal-dim)] text-dim text-xs">
-        {'↑↓'} Navigate {'·'} {'↵'} Select {'·'} ESC Close
+      <div className="flex text-dim text-xs">
+        <span>{BOX.vertical}</span>
+        <div className="flex-1 px-1 text-center">↑↓ Nav · ↵ Select · Esc</div>
+        <span>{BOX.vertical}</span>
       </div>
+
+      {/* Bottom border */}
+      <div className="text-dim whitespace-pre text-xs">{bottomBorder}</div>
     </div>
   );
 }
