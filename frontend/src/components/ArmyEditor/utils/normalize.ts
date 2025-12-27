@@ -13,8 +13,8 @@ export function normalizeForComparison(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[""]/g, '"')  // Normalize curly double quotes
-    .replace(/['']/g, "'"); // Normalize curly apostrophes/single quotes
+    .replace(/[\u201C\u201D]/g, '"')  // Normalize curly double quotes " "
+    .replace(/[\u2018\u2019]/g, "'"); // Normalize curly apostrophes ' '
 }
 
 /**

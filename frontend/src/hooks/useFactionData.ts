@@ -3,7 +3,7 @@ import type { FactionData } from '../components/ArmyEditor/types';
 
 // Available factions
 const AVAILABLE_FACTIONS = [
-  { id: 'all', name: 'ALL FACTIONS' },
+  { id: 'all', name: 'ALL FACTIONS ARMY' },
   { id: 'federal_states', name: 'Federal States-Army' },
   { id: 'atom_barons', name: 'The Atom Barons of Santagira' },
   { id: 'ebon_forest', name: 'The Army of the Ebon Forest' },

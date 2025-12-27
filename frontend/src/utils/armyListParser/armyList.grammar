@@ -65,7 +65,7 @@ DelineatorLine {
 }
 
 Unit {
-  Name Delineator Number PointsMarker TacomDesignator? Multiplier?
+  Name Delineator Number PointsMarker TacomDesignator? CommandClause? Multiplier?
 }
 
 TacomDesignator {
