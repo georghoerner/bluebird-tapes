@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bluebird-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bluebird}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-bluebird}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bluebird} -d ${POSTGRES_DB:-bluebird}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bluebird-backend
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-bluebird}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-bluebird}
+      PORT: 3001
+      HOST: 0.0.0.0
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bluebird-frontend
+    depends_on:
+      - backend
+    networks:
+      - default
+      - proxy-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    # Internal network for db/backend communication
+  proxy-network:
+    external: true
+    # Shared network with Nginx Proxy Manager

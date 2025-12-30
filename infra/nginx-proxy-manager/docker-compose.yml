@@ -1,0 +1,33 @@
+# Nginx Proxy Manager Stack
+# Deploy this FIRST in Portainer before other stacks
+#
+# After deployment:
+# 1. Access NPM at http://YOUR_VPS_IP:81
+# 2. Default login: admin@example.com / changeme
+# 3. Create the proxy-network if it doesn't exist:
+#    docker network create proxy-network
+
+services:
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    ports:
+      - "80:80"    # HTTP
+      - "443:443"  # HTTPS
+      - "81:81"    # Admin UI
+    environment:
+      TZ: Europe/Berlin
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+volumes:
+  npm_data:
+  npm_letsencrypt:
+
+networks:
+  proxy-network:
+    external: true
