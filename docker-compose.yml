@@ -27,7 +27,7 @@ services:
       DATABASE_URL: postgresql://bluebird:bluebird_dev@db:5432/bluebird
       PORT: 3001
       HOST: 0.0.0.0
-      CORS_ORIGIN: http://localhost:5173
+      CORS_ORIGIN: https://localhost:5173
       LOG_LEVEL: debug
     volumes:
       - ./backend/src:/app/src
