@@ -130,7 +130,7 @@ export async function checkWebGpuSupport(): Promise<GpuDiagnostics> {
       return diagnostics;
     }
     diagnostics.hasAdapter = true;
-    diagnostics.adapterInfo = await adapter.requestAdapterInfo();
+    diagnostics.adapterInfo = adapter.info;
 
     const device = await adapter.requestDevice();
     if (!device) {
@@ -173,7 +173,7 @@ export async function createGpuSsimMatcher(
 
   // Log adapter info for debugging
   try {
-    const info = await adapter.requestAdapterInfo();
+    const info = adapter.info;
     console.log('GPU Adapter:', info.vendor, info.architecture, info.device);
   } catch (e) {
     console.log('Could not get adapter info:', e);

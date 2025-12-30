@@ -9,7 +9,6 @@ export default defineConfig({
   server: {
     host: true, // Expose to network
     port: 5173,
-    https: true, // Uses basicSsl plugin certificates
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
