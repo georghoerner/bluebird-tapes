@@ -17,19 +17,19 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:bluebird-ci-runner
 
-      - name: Trigger Portainer Stack Redeploy
+      - name: Setup SSH key
         run: |
-          response=$(curl -s -w "\n%{http_code}" -X POST \
-            "http://${{ secrets.VPS_HOST }}:9000/api/stacks/webhooks/${{ secrets.PORTAINER_WEBHOOK_ID }}")
-          http_code=$(echo "$response" | tail -n1)
-          body=$(echo "$response" | sed '$d')
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
 
-          echo "Response: $body"
-          echo "HTTP Status: $http_code"
-
-          if [ "$http_code" -ge 200 ] && [ "$http_code" -lt 300 ]; then
-            echo "Deployment triggered successfully"
-          else
-            echo "Deployment failed"
-            exit 1
-          fi
+      - name: Deploy via SSH
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=accept-new \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          cd /opt/stacks/bluebird
+          git pull origin main
+          docker compose -f docker-compose.prod.yml build
+          docker compose -f docker-compose.prod.yml up -d
+          echo "Deployment complete"
+          EOF
