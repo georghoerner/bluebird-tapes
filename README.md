@@ -14,13 +14,15 @@ This is very much in development and not meant to be spun up in any sensible way
 
 - Create and share army lists for Firelock 198X (planned)
 - 1980s terminal aesthetic with IBM VGA font and CRT effects (implemented & working on)
-- Support for all four factions: (implemented)
+- Support for all four factions as of end of 2025: (implemented)
   - Federal States-Army
   - Army of the Ebon Forest
   - The New Rygolic Host
   - Atom Barons of Santagria
+- E/D/T unit sub-designations, with unit type and ability checking for error correction (implemented)
 - Tactical groups (implemented)
-- E/D/T unit sub-designations (implemented, planning on doing unit type checking for error correction)
+- GLR-grammar based autocorrection and autocomplete with Lezer and Codemirror (implemented)
+- Unit info with unit & weapon ability tooltip on hover (implemented & wokring on)
 - Shareable links for army lists (planned)
 
 ## Tech Stack
