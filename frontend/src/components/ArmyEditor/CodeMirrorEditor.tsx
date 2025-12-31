@@ -312,9 +312,11 @@ export function CodeMirrorEditor({
     setDropdownVisible(false);
   }, [factions, selectedFaction, getFactionData]);
 
-  // Ref for checkAutocomplete to avoid stale closure in updateListener
+  // Refs to avoid stale closures in updateListener
   const checkAutocompleteRef = useRef(checkAutocomplete);
   checkAutocompleteRef.current = checkAutocomplete;
+  const updateCursorUnitRef = useRef(updateCursorUnit);
+  updateCursorUnitRef.current = updateCursorUnit;
 
   // Dropdown helpers
   const positionDropdown = (cursorPos: number, view: EditorView) => {
@@ -436,7 +438,7 @@ export function CodeMirrorEditor({
       if (update.selectionSet || update.docChanged) {
         const content = update.state.doc.toString();
         const cursorPos = update.state.selection.main.head;
-        updateCursorUnit(content, cursorPos);
+        updateCursorUnitRef.current(content, cursorPos);
         // Autocomplete now triggered by Ctrl+Space instead of on every keystroke
       }
     });
