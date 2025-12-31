@@ -8,6 +8,12 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# Copy game data (from submodule) to dist
+RUN cp -r game-data/data dist/ && \
+    cp -r game-data/unit_images dist/ && \
+    cp -r game-data/unit_ascii dist/ && \
+    cp -r game-data/rules dist/
+
 FROM nginx:alpine
 
 # Copy built assets
