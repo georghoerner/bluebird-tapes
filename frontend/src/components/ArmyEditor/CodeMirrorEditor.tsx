@@ -78,12 +78,14 @@ export function CodeMirrorEditor({
   const dropdownItemsRef = useRef(dropdownItems);
   const selectedIndexRef = useRef(selectedIndex);
   const triggerStartRef = useRef(triggerStart);
+  const selectedFactionRef = useRef(selectedFaction);
 
   // Keep refs in sync with state
   dropdownVisibleRef.current = dropdownVisible;
   dropdownItemsRef.current = dropdownItems;
   selectedIndexRef.current = selectedIndex;
   triggerStartRef.current = triggerStart;
+  selectedFactionRef.current = selectedFaction;
 
   // Stats calculated from parse tree
   const [totalPoints, setTotalPoints] = useState(0);
@@ -198,13 +200,20 @@ export function CodeMirrorEditor({
 
     const normalizedLine = normalizeForComparison(currentLine);
 
+    console.log('[updateCursorUnit] line:', currentLine);
+    console.log('[updateCursorUnit] normalized:', normalizedLine);
+    console.log('[updateCursorUnit] selectedFaction:', selectedFaction);
+
     // First check selected faction (prioritize for ambiguous names)
     if (selectedFaction && selectedFaction !== 'all') {
       const factionData = getFactionData(selectedFaction);
+      console.log('[updateCursorUnit] factionData:', factionData ? `${factionData.units.length} units` : 'null');
       if (factionData) {
         for (const unit of factionData.units) {
-          if (normalizedLine.includes(normalizeForComparison(unit.name)) ||
+          const normalizedName = normalizeForComparison(unit.name);
+          if (normalizedLine.includes(normalizedName) ||
               normalizedLine.includes(normalizeForComparison(unit.displayName))) {
+            console.log('[updateCursorUnit] MATCH:', unit.name);
             onCursorUnitChange?.(unit);
             return;
           }
@@ -221,12 +230,14 @@ export function CodeMirrorEditor({
         for (const unit of factionData.units) {
           if (normalizedLine.includes(normalizeForComparison(unit.name)) ||
               normalizedLine.includes(normalizeForComparison(unit.displayName))) {
+            console.log('[updateCursorUnit] MATCH (other faction):', unit.name);
             onCursorUnitChange?.(unit);
             return;
           }
         }
       }
     }
+    console.log('[updateCursorUnit] No match');
     onCursorUnitChange?.(null);
   }, [factions, selectedFaction, getFactionData, onCursorUnitChange]);
 
@@ -406,6 +417,21 @@ export function CodeMirrorEditor({
         setText(content);
         onTextChange?.(content);
         calculateStats(content);
+
+        // Auto-detect faction from first non-empty line if not already set
+        if (!selectedFactionRef.current) {
+          const lines = content.split('\n');
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed) {
+              const detectedFaction = matchFactionByAlias(trimmed);
+              if (detectedFaction) {
+                setSelectedFaction(detectedFaction);
+              }
+              break;
+            }
+          }
+        }
       }
       if (update.selectionSet || update.docChanged) {
         const content = update.state.doc.toString();
