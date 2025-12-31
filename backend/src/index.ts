@@ -2,16 +2,20 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { armyListRoutes } from './routes/armyList.js';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const fastify = Fastify({
-  logger: {
-    level: process.env.LOG_LEVEL || 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        colorize: true,
+  logger: isDev
+    ? {
+        level: process.env.LOG_LEVEL || 'info',
+        transport: {
+          target: 'pino-pretty',
+          options: { colorize: true },
+        },
+      }
+    : {
+        level: process.env.LOG_LEVEL || 'info',
       },
-    },
-  },
 });
 
 // Register plugins
