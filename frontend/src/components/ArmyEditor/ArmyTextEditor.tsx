@@ -2,6 +2,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { TerminalDropdown } from './TerminalDropdown';
 import type { AutocompleteItem, FactionData, Unit } from './types';
 import { MOUNTING_MODES } from './types';
+import { matchFactionByAlias } from '../../hooks/useFactionData';
 
 interface ArmyTextEditorProps {
   maxWidth?: number;
@@ -95,6 +96,22 @@ export function ArmyTextEditor({
     const newText = e.target.value;
     setText(newText);
     onTextChange?.(newText);
+
+    // Auto-detect faction from first non-empty line if not already set
+    if (!selectedFaction) {
+      const lines = newText.split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed) {
+          const detectedFaction = matchFactionByAlias(trimmed);
+          if (detectedFaction) {
+            console.log('Auto-detected faction:', detectedFaction);
+            setSelectedFaction(detectedFaction);
+          }
+          break; // Only check first non-empty line
+        }
+      }
+    }
 
     // Check for autocomplete triggers
     checkAutocomplete(newText, e.target.selectionStart);
