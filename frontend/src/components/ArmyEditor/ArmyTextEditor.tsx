@@ -66,21 +66,27 @@ export function ArmyTextEditor({
     const { line } = getCurrentLineInfo();
     const normalizedLine = normalizeQuotes(line.toLowerCase());
 
+    console.log('updateCursorContext - line:', line);
+    console.log('updateCursorContext - factions:', factions.length);
+
     // Try to find a unit name in the current line - search ALL factions
     for (const faction of factions) {
       const factionData = getFactionData(faction.id);
+      console.log(`Faction ${faction.id}: ${factionData ? factionData.units.length + ' units' : 'NO DATA'}`);
       if (factionData) {
         for (const unit of factionData.units) {
           const normalizedName = normalizeQuotes(unit.name.toLowerCase());
           const normalizedDisplayName = normalizeQuotes(unit.displayName.toLowerCase());
           if (normalizedLine.includes(normalizedName) ||
               normalizedLine.includes(normalizedDisplayName)) {
+            console.log('MATCH FOUND:', unit.name);
             onCursorUnitChange?.(unit);
             return;
           }
         }
       }
     }
+    console.log('No match found');
     onCursorUnitChange?.(null);
   }, [getCurrentLineInfo, factions, getFactionData, onCursorUnitChange]);
 
