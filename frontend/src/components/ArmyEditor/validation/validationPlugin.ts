@@ -230,10 +230,13 @@ export const errorGutter = gutter({
 
     const markers: Range<GutterMarker>[] = [];
     const markedLines = new Set<number>();
+    const docLength = view.state.doc.length;
 
     // Add markers for unit validation errors
     for (const unit of result.unitValidations) {
       if (unit.status === 'unknown' || unit.status === 'cross-faction') {
+        // Bounds check: skip if position is outside current document
+        if (unit.from < 0 || unit.from > docLength) continue;
         const line = view.state.doc.lineAt(unit.from);
         if (!markedLines.has(line.number)) {
           markedLines.add(line.number);
@@ -245,6 +248,8 @@ export const errorGutter = gutter({
 
     // Add markers for transport errors
     for (const error of result.transportErrors) {
+      // Bounds check: skip if position is outside current document
+      if (error.from < 0 || error.from > docLength) continue;
       const line = view.state.doc.lineAt(error.from);
       if (!markedLines.has(line.number)) {
         markedLines.add(line.number);
