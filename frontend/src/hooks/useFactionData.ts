@@ -17,18 +17,21 @@ const FACTION_ALIASES: Record<string, string[]> = {
     'FSA', 'F.S.A.', 'F.S-A.', 'Fed', 'Federal', 'Federal States',
     'Intermarine Federation', 'Federation', 'Cydoland', 'Vansa',
     'Riesling', 'Sumpkassel', 'Eddelaw', 'Djekker', 'Vykeland', 'Derire',
+    'Federal States-Army',
   ],
   ebon_forest: [
     'AEF', 'A.E.F.', 'Regency', 'Regency Council', 'Wolf', 'Lupar', 'Lupes',
     'Ebon', 'Forest', 'Ebon Forest', 'Wolves', 'Dogface', 'Dogfaces', 'dog', 'dogs',
+    'Army of the Ebon Forest',
   ],
   rygolic_host: [
     'NRH', 'N.R.H.', 'Rygonet', 'Net', '5G', 'Rygo', 'Rygolic',
     'man-machines', 'man machines', 'constructs', 'Rygoles', 'Nodes', 'angel', 'angels',
+    'New Rygolic Host', 'Rygolic Host',
   ],
   atom_barons: [
     'ABS', 'A.B.S.', 'Santagrines', 'Knights', 'Commonwealth', 'yokels',
-    'Barons', 'Atom Barons', 'Santagira',
+    'Barons', 'Atom Barons', 'Santagira', 'Atom Barons of Santagira',
   ],
 };
 
