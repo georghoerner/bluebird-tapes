@@ -57,17 +57,24 @@ export function ArmyTextEditor({
     return { line, lineStart, lineEnd, cursorInLine };
   }, [text]);
 
+  // Normalize quotes for comparison (curly quotes → straight quotes)
+  const normalizeQuotes = (str: string) =>
+    str.replace(/[""]/g, '"').replace(/['']/g, "'");
+
   // Update cursor position and check for unit under cursor
   const updateCursorContext = useCallback(() => {
     const { line } = getCurrentLineInfo();
+    const normalizedLine = normalizeQuotes(line.toLowerCase());
 
     // Try to find a unit name in the current line - search ALL factions
     for (const faction of factions) {
       const factionData = getFactionData(faction.id);
       if (factionData) {
         for (const unit of factionData.units) {
-          if (line.toLowerCase().includes(unit.name.toLowerCase()) ||
-              line.toLowerCase().includes(unit.displayName.toLowerCase())) {
+          const normalizedName = normalizeQuotes(unit.name.toLowerCase());
+          const normalizedDisplayName = normalizeQuotes(unit.displayName.toLowerCase());
+          if (normalizedLine.includes(normalizedName) ||
+              normalizedLine.includes(normalizedDisplayName)) {
             onCursorUnitChange?.(unit);
             return;
           }
