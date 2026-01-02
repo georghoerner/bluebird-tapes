@@ -9,6 +9,7 @@ import { armyList } from './armyListLanguage';
 import { pointsDecorationPlugin } from './pointsDecoration';
 import {
   factionDataFacet,
+  debugModeFacet,
   validationPlugin,
   validationResultField,
   validationTooltip,
@@ -79,6 +80,7 @@ export function CodeMirrorEditor({
   const selectedIndexRef = useRef(selectedIndex);
   const triggerStartRef = useRef(triggerStart);
   const selectedFactionRef = useRef(selectedFaction);
+  const debugModeRef = useRef(debugMode);
 
   // Keep refs in sync with state
   dropdownVisibleRef.current = dropdownVisible;
@@ -86,6 +88,7 @@ export function CodeMirrorEditor({
   selectedIndexRef.current = selectedIndex;
   triggerStartRef.current = triggerStart;
   selectedFactionRef.current = selectedFaction;
+  debugModeRef.current = debugMode;
 
   // Stats calculated from parse tree
   const [totalPoints, setTotalPoints] = useState(0);
@@ -94,6 +97,7 @@ export function CodeMirrorEditor({
 
   const fontSizeCompartment = useRef(new Compartment());
   const factionDataCompartment = useRef(new Compartment());
+  const debugModeCompartment = useRef(new Compartment());
 
   const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 24));
   const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 10));
@@ -260,20 +264,22 @@ export function CodeMirrorEditor({
 
     const normalizedLine = normalizeForComparison(currentLine);
 
-    console.log('[updateCursorUnit] line:', currentLine);
-    console.log('[updateCursorUnit] normalized:', normalizedLine);
-    console.log('[updateCursorUnit] selectedFaction:', selectedFaction);
+    if (debugMode) {
+      console.log('[updateCursorUnit] line:', currentLine);
+      console.log('[updateCursorUnit] normalized:', normalizedLine);
+      console.log('[updateCursorUnit] selectedFaction:', selectedFaction);
+    }
 
     // First check selected faction (prioritize for ambiguous names)
     if (selectedFaction && selectedFaction !== 'all') {
       const factionData = getFactionData(selectedFaction);
-      console.log('[updateCursorUnit] factionData:', factionData ? `${factionData.units.length} units` : 'null');
+      if (debugMode) console.log('[updateCursorUnit] factionData:', factionData ? `${factionData.units.length} units` : 'null');
       if (factionData) {
         for (const unit of factionData.units) {
           const normalizedName = normalizeForComparison(unit.name);
           if (normalizedLine.includes(normalizedName) ||
               normalizedLine.includes(normalizeForComparison(unit.displayName))) {
-            console.log('[updateCursorUnit] MATCH:', unit.name);
+            if (debugMode) console.log('[updateCursorUnit] MATCH:', unit.name);
             onCursorUnitChange?.(unit);
             return;
           }
@@ -290,16 +296,16 @@ export function CodeMirrorEditor({
         for (const unit of factionData.units) {
           if (normalizedLine.includes(normalizeForComparison(unit.name)) ||
               normalizedLine.includes(normalizeForComparison(unit.displayName))) {
-            console.log('[updateCursorUnit] MATCH (other faction):', unit.name);
+            if (debugMode) console.log('[updateCursorUnit] MATCH (other faction):', unit.name);
             onCursorUnitChange?.(unit);
             return;
           }
         }
       }
     }
-    console.log('[updateCursorUnit] No match');
+    if (debugMode) console.log('[updateCursorUnit] No match');
     onCursorUnitChange?.(null);
-  }, [factions, selectedFaction, getFactionData, onCursorUnitChange]);
+  }, [factions, selectedFaction, getFactionData, onCursorUnitChange, debugMode]);
 
   // Check for autocomplete triggers
   const checkAutocomplete = useCallback((content: string, cursorPos: number, view: EditorView) => {
@@ -480,18 +486,25 @@ export function CodeMirrorEditor({
         onTextChange?.(content);
         calculateStats(content);
 
-        // Auto-detect faction from first non-empty line if not already set
-        if (!selectedFactionRef.current) {
-          const lines = content.split('\n');
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed) {
-              const detectedFaction = matchFactionByAlias(trimmed);
-              if (detectedFaction) {
-                setSelectedFaction(detectedFaction);
-              }
-              break;
+        // Auto-detect faction from first non-empty line
+        const lines = content.split('\n');
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (trimmed) {
+            const detectedFaction = matchFactionByAlias(trimmed);
+            if (debugModeRef.current) {
+              console.log('[factionDetect] trimmed:', trimmed, '→ detected:', detectedFaction, '| current:', selectedFactionRef.current);
             }
+            // Update if detected faction is different from current
+            if (detectedFaction && detectedFaction !== selectedFactionRef.current) {
+              if (debugModeRef.current) console.log('[factionDetect] UPDATING faction to:', detectedFaction);
+              setSelectedFaction(detectedFaction);
+            } else if (!detectedFaction && selectedFactionRef.current) {
+              // Clear faction if first line no longer matches any faction
+              if (debugModeRef.current) console.log('[factionDetect] CLEARING faction');
+              setSelectedFaction(null);
+            }
+            break;
           }
         }
       }
@@ -514,6 +527,7 @@ export function CodeMirrorEditor({
         pointsDecorationPlugin,
         // Validation extensions
         factionDataCompartment.current.of(factionDataFacet.of(buildFactionDataConfig())),
+        debugModeCompartment.current.of(debugModeFacet.of(false)),
         validationResultField,
         validationPlugin,
         validationTooltip,
@@ -618,13 +632,25 @@ export function CodeMirrorEditor({
   // Update validation facet when faction data changes
   useEffect(() => {
     if (viewRef.current) {
+      const config = buildFactionDataConfig();
       viewRef.current.dispatch({
         effects: factionDataCompartment.current.reconfigure(
-          factionDataFacet.of(buildFactionDataConfig())
+          factionDataFacet.of(config)
         ),
       });
     }
   }, [selectedFaction, factions, buildFactionDataConfig]);
+
+  // Update debug mode facet when debug panel is toggled
+  useEffect(() => {
+    if (viewRef.current) {
+      viewRef.current.dispatch({
+        effects: debugModeCompartment.current.reconfigure(
+          debugModeFacet.of(debugMode)
+        ),
+      });
+    }
+  }, [debugMode]);
 
   // Line stats
   const lines = text.split('\n');

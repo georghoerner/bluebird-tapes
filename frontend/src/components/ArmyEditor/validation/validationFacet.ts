@@ -15,3 +15,10 @@ const defaultConfig: FactionDataConfig = {
 export const factionDataFacet = Facet.define<FactionDataConfig, FactionDataConfig>({
   combine: (values) => values[0] ?? defaultConfig,
 });
+
+/**
+ * Facet to control debug logging in CodeMirror plugins.
+ */
+export const debugModeFacet = Facet.define<boolean, boolean>({
+  combine: (values) => values[0] ?? false,
+});
