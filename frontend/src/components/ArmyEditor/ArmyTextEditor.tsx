@@ -40,6 +40,71 @@ export function ArmyTextEditor({
   const increaseFontSize = () => setFontSize(prev => Math.min(prev + 2, 24));
   const decreaseFontSize = () => setFontSize(prev => Math.max(prev - 2, 10));
 
+  // Sanitize filename to prevent path traversal and invalid characters
+  const sanitizeFilename = (name: string): string => {
+    return name
+      .replace(/\.\./g, '')              // Remove path traversal
+      .replace(/[<>:"/\\|?*\x00-\x1f]/g, '') // Remove invalid/control chars
+      .replace(/^\.+/, '')               // No leading dots
+      .replace(/\.+$/, '')               // No trailing dots
+      .replace(/\s+/g, ' ')              // Normalize whitespace
+      .trim()
+      .slice(0, 200);                    // Limit length
+  };
+
+  // Download army list as text file
+  const downloadArmyList = () => {
+    if (!text.trim()) return;
+
+    // Build filename: "FSA - Army Name.txt"
+    const lines = text.split('\n').filter(l => l.trim());
+
+    // Handle faction prefix (including 'all' custom faction)
+    let factionPrefix = 'ARMY';
+    if (selectedFaction) {
+      factionPrefix = selectedFaction.toLowerCase() === 'all' ? 'ALL' : selectedFaction.toUpperCase();
+    }
+
+    // Army name: all lines between faction (line 0) and points line, plus prefix of points line
+    // Points line is identified by containing " - " followed by pts/points
+    let armyName = 'List';
+    if (lines.length >= 2) {
+      const pointsLineIndex = lines.findIndex((l, i) =>
+        i > 0 && / - \d+\s*(pts|points)/i.test(l)
+      );
+
+      if (pointsLineIndex > 0) {
+        // Collect name lines between faction and points line
+        const nameParts = lines.slice(1, pointsLineIndex);
+        // Add the part before " - " from the points line
+        const pointsLinePrefix = lines[pointsLineIndex].split(' - ')[0].trim();
+        if (pointsLinePrefix) {
+          nameParts.push(pointsLinePrefix);
+        }
+        const combined = nameParts.join(' ').trim();
+        if (combined) {
+          armyName = combined;
+        }
+      } else if (lines.length >= 2) {
+        // Fallback: no points line found, use line 1 before " - "
+        const nameLine = lines[1].split(' - ')[0].trim();
+        if (nameLine) {
+          armyName = nameLine;
+        }
+      }
+    }
+
+    const filename = sanitizeFilename(`${factionPrefix} - ${armyName}`) || 'army-list';
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   // Get current line info
   const getCurrentLineInfo = useCallback(() => {
     if (!textareaRef.current) return { line: '', lineStart: 0, lineEnd: 0, cursorInLine: 0 };
@@ -348,8 +413,16 @@ export function ArmyTextEditor({
           <span className="text-bright terminal-glow mx-1">ARMY LIST ENTRY</span>
           <button onClick={increaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓+▓</button>
         </span>
-        <span className="text-dim text-xs">
+        <span className="text-dim text-xs flex items-center gap-2">
           {selectedFaction ? `[${selectedFaction.toUpperCase()}]` : '[NO FACTION]'}
+          <button
+            onClick={downloadArmyList}
+            disabled={!text.trim()}
+            className="text-[var(--terminal-fg)] hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+            title="Download army list"
+          >
+            [SAVE]
+          </button>
         </span>
       </div>
 

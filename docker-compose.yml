@@ -51,6 +51,7 @@ services:
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/public:/app/public
+      - ./frontend/game-data:/app/game-data
       - /app/node_modules
     ports:
       - "5173:5173"
