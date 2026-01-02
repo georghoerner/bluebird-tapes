@@ -30,7 +30,8 @@ jobs:
           cd /opt/stacks/bluebird
           git pull origin main
           git submodule update --init --recursive
-          docker compose -f docker-compose.prod.yml build --no-cache
-          docker compose -f docker-compose.prod.yml up -d
+          COMPOSE_PARALLEL_LIMIT=1 docker compose -f docker-compose.prod.yml build --no-cache --pull
+          docker compose -f docker-compose.prod.yml up -d --force-recreate
+          docker image prune -f
           echo "Deployment complete"
           EOF
