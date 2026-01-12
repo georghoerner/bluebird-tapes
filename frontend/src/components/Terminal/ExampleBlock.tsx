@@ -14,7 +14,6 @@ import { HoverExplain } from './GridTooltip';
  *   P1 "Parallax" - 35 pts
  *   - [D] Tactical Team - 15 pts
  *   - [E] Node Team - 0 pts (TACOM)
- *   - [T] Automated Sentry - 15 pts
  */
 export function ExampleBlock() {
   return (
@@ -22,7 +21,7 @@ export function ExampleBlock() {
       <pre className="text-sm leading-relaxed">
         {/* Faction name */}
         <HoverExplain
-          explanation="The faction this army belongs to. Determines available units, abilities, and playstyle."
+          explanation="The faction the observed army belongs to. Delineate by known characteristics."
           variant="stats"
         >
           The New Rygolic Host
@@ -31,37 +30,35 @@ export function ExampleBlock() {
 
         {/* Army header line */}
         <HoverExplain
-          explanation="Security Task Element (STE) is a Federal States term for a task force. Other factions use different terminology."
+          explanation="The designation of the observed force for future reference."
           variant="info"
         >
-          SECURITY TASK ELEMENT
-        </HoverExplain>
-        {' '}
-        <HoverExplain
-          explanation="The army's code name or identifier. Can be any designation you choose."
-          variant="info"
-        >
-          JASPER-15
+          SECURITY TASK ELEMENT JASPER-15
         </HoverExplain>
         {'\n'}
 
         {/* Points and command line */}
         <HoverExplain
-          explanation="The name of this army list for easy reference."
+          explanation="Reserved space for further army information. Here, its observed whereabouts are noted."
           variant="stats"
         >
-          EXAMPLE
+           last seen operating {'\n'} 30km NW of Lutāx
         </HoverExplain>
-        {' - '}
         <HoverExplain
-          explanation="Total point value of the army. Standard games are typically 1000-2000 points."
+          explanation="The delineator, neccessary for our text system to differentiate between entered information and calculated information."
+          variant="info"
+        >
+        {' - '}
+        </HoverExplain>
+        <HoverExplain
+          explanation="Total point value designation of observed force. Will be calculated while observed units are entered by user."
           variant="stats"
         >
           100 PTS
         </HoverExplain>
         {', '}
         <HoverExplain
-          explanation="Command Points available for special abilities and stratagems during the game."
+          explanation="Command potential of observed force. Will be calculated while observed units are entered by user."
           variant="stats"
         >
           2 COMMAND
@@ -74,14 +71,14 @@ export function ExampleBlock() {
 
         {/* Tactical group header */}
         <HoverExplain
-          explanation="Tactical Groups organize your units. Each group has a function: HQ, CORE, SUPPORT, or RESERVE."
+          explanation="If force is observed to be split into seperately operating parts, designate them as Tactical Groups. Name these according to function or even callsign if intelligence is available."
           variant="help"
         >
           Task Unit 1
         </HoverExplain>
         {' - '}
         <HoverExplain
-          explanation="The group's role. Headquarters contains your command elements."
+          explanation="The group's role. In this case SIGINT suggests a Node Team in the observed vehicle, therefore HQ designation was made."
           variant="help"
         >
           Headquarters
@@ -89,22 +86,16 @@ export function ExampleBlock() {
         {'\n'}
 
         {/* Command unit */}
-        <HoverExplain
-          explanation="P1 indicates this unit has Priority 1 deployment - it deploys first."
-          variant="stats"
-        >
-          P1
-        </HoverExplain>
         {' '}
         <HoverExplain
-          explanation="Unit name in quotes. 'Parallax' is a Federal States reconnaissance vehicle."
+          explanation="Name of the observed unit. In this case a NRH hovercraft was observed, probably variant P1"
           variant="info"
         >
-          "Parallax"
+          P1 "Parallax"
         </HoverExplain>
         {' - '}
         <HoverExplain
-          explanation="Point cost of this unit."
+          explanation="Point value of this unit."
           variant="stats"
         >
           35 pts
@@ -114,14 +105,14 @@ export function ExampleBlock() {
         {/* Infantry unit with D designation */}
         {'- '}
         <HoverExplain
-          explanation="[D] = Dismounted. Infantry operates on foot. Other options: [E] Embarked, [T] Transport."
-          variant="warning"
+          explanation="[D] = Desanting. Unit is observed riding the vehicle before. Other options: [E] Embarked, [T] Towed."
+          variant="info"
         >
           [D]
         </HoverExplain>
         {' '}
         <HoverExplain
-          explanation="A basic infantry fire team."
+          explanation="A basic NRH infantry fire team."
           variant="info"
         >
           Tactical Team
@@ -133,43 +124,27 @@ export function ExampleBlock() {
         {/* Infantry unit with E designation */}
         {'- '}
         <HoverExplain
-          explanation="[E] = Embarked. Infantry starts inside a transport vehicle."
-          variant="warning"
+          explanation="[E] = Embarked. First unindentec vehicle above is the personel carrier this unit is embarked in."
+          variant="info"
         >
           [E]
         </HoverExplain>
         {' '}
         <HoverExplain
-          explanation="Specialized electronic warfare team."
+          explanation="NRH command and control element."
           variant="info"
         >
           Node Team
         </HoverExplain>
         {' - 0 pts '}
         <HoverExplain
-          explanation="(TACOM) = Tactical Command asset. Free unit attached to HQ for command & control."
-          variant="help"
+          explanation="(TACOM) = Tactical Command asset designation. Optional."
+          variant="info"
         >
           (TACOM)
         </HoverExplain>
         {'\n'}
-
-        {/* Transport unit */}
-        {'- '}
-        <HoverExplain
-          explanation="[T] = Transport. This vehicle carries embarked infantry."
-          variant="warning"
-        >
-          [T]
-        </HoverExplain>
-        {' '}
-        <HoverExplain
-          explanation="Automated/drone vehicle that operates independently."
-          variant="info"
-        >
-          Automated Sentry
-        </HoverExplain>
-        {' - 15 pts'}
+        [...]
       </pre>
 
       <div className="mt-4 text-dim text-xs">
