@@ -17,7 +17,7 @@ import { HoverExplain } from './GridTooltip';
  */
 export function ExampleBlock() {
   return (
-    <CollapsibleSection label="FORMAT EXAMPLE" defaultExpanded={false}>
+    <CollapsibleSection label="FORMAT EXAMPLE" defaultExpanded={true}>
       <pre className="text-sm leading-relaxed">
         {/* Faction name */}
         <HoverExplain
@@ -147,7 +147,7 @@ export function ExampleBlock() {
         [...]
       </pre>
 
-      <div className="mt-4 text-dim text-xs">
+      <div className="mt-4 text-dim text-sm">
         <span className="text-bright">TIP:</span> Hover over any highlighted text above to see explanations.
       </div>
     </CollapsibleSection>

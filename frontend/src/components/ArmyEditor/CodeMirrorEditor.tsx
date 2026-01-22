@@ -32,10 +32,10 @@ interface CodeMirrorEditorProps {
   getError?: (id: string) => string | null;
 }
 
-const PLACEHOLDER_TEXT = `Enter faction name to begin...
+const PLACEHOLDER_TEXT = `Enter faction name to begin, use CTRL + SPACE to autocomplete...
 
 Example:
-FEDERAL STATES
+NRH
 MY ARMY NAME - 100 PTS, 3 COMMAND
 _________________________
 Task Unit 1 - Headquarters
@@ -657,71 +657,45 @@ export function CodeMirrorEditor({
   const lineCount = lines.length;
   const longestLine = Math.max(...lines.map(l => l.length), 0);
 
-  // Box-drawing characters
-  const BOX = {
-    topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝',
-    horizontal: '═', vertical: '║', teeRight: '╠', teeLeft: '╣',
-  };
-  const headerText = ' ARMY LIST ENTRY ';
   const factionText = selectedFaction ? `[${selectedFaction.toUpperCase()}]` : '[NO FACTION]';
-  const innerWidth = Math.max(maxWidth, 40);
-  const topBorder = `${BOX.topLeft}${BOX.horizontal.repeat(Math.floor((innerWidth - headerText.length) / 2))}${headerText}${BOX.horizontal.repeat(Math.ceil((innerWidth - headerText.length) / 2))}${BOX.topRight}`;
-  const divider = `${BOX.teeRight}${BOX.horizontal.repeat(innerWidth)}${BOX.teeLeft}`;
-  const bottomBorder = `${BOX.bottomLeft}${BOX.horizontal.repeat(innerWidth)}${BOX.bottomRight}`;
 
   return (
-    <div className="h-full flex flex-col font-mono">
-      {/* Top border with title */}
-      <div className="text-dim whitespace-pre text-xs flex justify-between">
-        <span>{topBorder}</span>
-      </div>
-
+    <div className="border border-[var(--terminal-dim)] h-full flex flex-col font-mono">
       {/* Header controls */}
-      <div className="flex text-xs">
-        <span className="text-dim">{BOX.vertical}</span>
-        <div className="flex-1 px-1 flex justify-between items-center">
-          <span className="flex items-center gap-2">
-            <span className="flex items-center">
-              <button onClick={decreaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[-]</button>
-              <span className="text-bright terminal-glow mx-1">SIZE</span>
-              <button onClick={increaseFontSize} className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer text-dim">[+]</button>
-            </span>
-            <button
-              onClick={() => setDebugMode(!debugMode)}
-              className={`bg-transparent border-0 p-0 m-0 cursor-pointer ${debugMode ? 'text-green-500' : 'text-dim'} hover:text-bright`}
-            >
-              [DBG]
-            </button>
+      <div className="px-2 py-1 border-b border-[var(--terminal-dim)] flex justify-between items-center">
+        <span className="flex items-center gap-2">
+          <span className="flex items-center">
+            <button onClick={decreaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓-▓</button>
+            <span className="text-bright terminal-glow mx-1">ARMY LIST ENTRY</span>
+            <button onClick={increaseFontSize} className="text-xs hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer">▓+▓</button>
           </span>
-          <span className="flex items-center gap-2">
-            <span className="text-dim">{factionText}</span>
-            <button
-              onClick={downloadArmyList}
-              disabled={!text.trim()}
-              className="text-[var(--terminal-fg)] hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              title="Download army list"
-            >
-              [SAVE]
-            </button>
-          </span>
-        </div>
-        <span className="text-dim">{BOX.vertical}</span>
+          <button
+            onClick={() => setDebugMode(!debugMode)}
+            className={`text-xs bg-transparent border-0 p-0 m-0 cursor-pointer ${debugMode ? 'text-green-500' : 'text-dim'} hover:text-bright`}
+          >
+            [DBG]
+          </button>
+        </span>
+        <span className="text-dim text-xs flex items-center gap-2">
+          {factionText}
+          <button
+            onClick={downloadArmyList}
+            disabled={!text.trim()}
+            className="text-[var(--terminal-fg)] hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+            title="Download army list"
+          >
+            [SAVE]
+          </button>
+        </span>
       </div>
-
-      {/* Divider */}
-      <div className="text-dim whitespace-pre text-xs">{divider}</div>
 
       {/* CodeMirror Editor */}
-      <div className="flex-1 relative overflow-hidden flex">
-        <span className="text-dim text-xs">{BOX.vertical}</span>
-        <div className="flex-1">
-          <div
-            ref={editorRef}
-            className="h-full w-full p-1"
-            style={{ minHeight: '200px' }}
-          />
-        </div>
-        <span className="text-dim text-xs">{BOX.vertical}</span>
+      <div className="flex-1 relative overflow-hidden">
+        <div
+          ref={editorRef}
+          className="h-full w-full p-2"
+          style={{ minHeight: '200px' }}
+        />
 
         {/* Dropdown */}
         <TerminalDropdown
@@ -734,26 +708,16 @@ export function CodeMirrorEditor({
         />
       </div>
 
-      {/* Divider */}
-      <div className="text-dim whitespace-pre text-xs">{divider}</div>
-
       {/* Footer status */}
-      <div className="flex text-dim text-xs">
-        <span>{BOX.vertical}</span>
-        <div className="flex-1 px-1 flex justify-between">
-          <span>L:{lineCount}</span>
-          <span className="text-bright">
-            {totalPoints}/{pointCap} PTS | {commandPoints} CMD
-          </span>
-          <span className={longestLine > maxWidth ? 'text-[#FF6B6B]' : ''}>
-            W:{longestLine}/{maxWidth}
-          </span>
-        </div>
-        <span>{BOX.vertical}</span>
+      <div className="px-2 py-1 border-t border-[var(--terminal-dim)] flex justify-between text-dim text-xs">
+        <span>Lines: {lineCount}</span>
+        <span className="text-bright">
+          {totalPoints}/{pointCap} PTS | {commandPoints} CMD
+        </span>
+        <span className={longestLine > maxWidth ? 'text-[#FF6B6B]' : ''}>
+          Max Width: {longestLine}/{maxWidth}
+        </span>
       </div>
-
-      {/* Bottom border */}
-      <div className="text-dim whitespace-pre text-xs">{bottomBorder}</div>
 
       {/* Debug Panel */}
       {debugMode && (

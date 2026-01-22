@@ -20,6 +20,7 @@
     "@lezer/highlight": "^1.2.3",
     "@lezer/lr": "^1.4.5",
     "@webgpu/types": "^0.1.68",
+    "canvas": "^3.2.1",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
