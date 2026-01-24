@@ -119,17 +119,17 @@ function UnitStatLine({ stats }: { stats: Unit['stats'] }) {
     </StatTooltip>
   );
 
-  // Hull
+  // Height
   parts.push(
-    <StatTooltip key="hull" tooltip={STAT_TOOLTIPS.hull}>
-      H{stats.hull}
+    <StatTooltip key="height" tooltip={STAT_TOOLTIPS.height}>
+      H{stats.height}
     </StatTooltip>
   );
 
-  // Speed
+  // Spotting Distance
   parts.push(
-    <StatTooltip key="speed" tooltip={STAT_TOOLTIPS.speed}>
-      {stats.speed}
+    <StatTooltip key="spot" tooltip={STAT_TOOLTIPS.spot}>
+      {stats.spot}
     </StatTooltip>
   );
 

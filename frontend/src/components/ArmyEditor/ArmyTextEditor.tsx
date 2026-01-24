@@ -405,7 +405,7 @@ export function ArmyTextEditor({
   const longestLine = Math.max(...lines.map(l => l.length));
 
   return (
-    <div className="border border-[var(--terminal-fg)] h-full flex flex-col">
+    <div className="border border-[var(--terminal-dim)] h-full flex flex-col">
       {/* Header with size controls */}
       <div className="px-2 py-1 border-b border-[var(--terminal-dim)] flex justify-between items-center">
         <span className="flex items-center">

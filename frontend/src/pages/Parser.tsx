@@ -625,7 +625,7 @@ function UnitCard({
             <div className="unit-card-row">
               <span className="unit-card-label">Stats:</span>
               <span className="unit-card-value">
-                {unit.stats.type}, H{unit.stats.hull}, {unit.stats.speed}, {unit.stats.move}, Q{unit.stats.quality}, {unit.stats.toughness}
+                {unit.stats.type}, H{unit.stats.height}, {unit.stats.spot}, {unit.stats.move}, Q{unit.stats.quality}, {unit.stats.toughness}
                 {unit.stats.command !== undefined && `, C${unit.stats.command}`}
               </span>
             </div>
