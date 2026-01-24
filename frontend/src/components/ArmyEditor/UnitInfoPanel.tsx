@@ -67,7 +67,7 @@ export function UnitInfoPanel({ unit }: UnitInfoPanelProps) {
         {/* Abilities */}
         {unit.abilities.length > 0 && (
           <div className="mb-3">
-            <div className="text-dim mb-1">{'─── ABILITIES ───'}</div>
+            <div className="text-dim mb-1">{'─── UNIT SPECIAL RULES ───'}</div>
             <div>
               {unit.abilities.map((ability, i) => (
                 <span key={i} className="inline-block mr-2 mb-1 px-1 border border-[var(--terminal-dim)] cursor-help">
@@ -81,7 +81,7 @@ export function UnitInfoPanel({ unit }: UnitInfoPanelProps) {
         {/* Description */}
         {unit.description && (
           <div className="mb-3">
-            <div className="text-dim mb-1">{'─── SPECIAL ───'}</div>
+            <div className="text-dim mb-1">{'─── ADDITIONAL ───'}</div>
             <div className="italic">{unit.description}</div>
           </div>
         )}
