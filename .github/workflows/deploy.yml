@@ -30,7 +30,10 @@ jobs:
           cd /opt/stacks/bluebird
           git config --global --add safe.directory /opt/stacks/bluebird
           git config --global --add safe.directory /opt/stacks/bluebird/frontend/game-data
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           git pull origin main
+          git submodule sync
           git submodule update --init --recursive
           COMPOSE_PARALLEL_LIMIT=1 docker compose -f docker-compose.prod.yml build --no-cache --pull
           docker compose -f docker-compose.prod.yml up -d --force-recreate
