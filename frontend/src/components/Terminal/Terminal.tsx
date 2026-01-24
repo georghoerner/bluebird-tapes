@@ -29,10 +29,42 @@ export function Terminal({ children, hideHeader = false }: TerminalProps) {
       </main>
 
       {/* Terminal footer */}
-      <footer className="p-2 border-t border-[var(--terminal-dim)] text-center text-dim text-xs">
-        <span>CLASSIFICATION: UNCLASSIFIED // FOUO</span>
-        <span className="mx-4">|</span>
-        <span>DREKFORT M.D.C. - LANGPORT, VANSA</span>
+      <footer className="p-2 border-t border-[var(--terminal-dim)] text-center text-dim text-xs flex justify-between items-center">
+        <span className="flex-1" />
+        <span>
+          <span>CLASSIFICATION: UNCLASSIFIED // FOUO</span>
+          <span className="mx-4">|</span>
+          <span>DREKFORT M.D.C. - LANGPORT, VANSA</span>
+        </span>
+        <span className="flex-1 text-right">
+          <button
+            onClick={() => {
+              const info = [
+                '## Environment',
+                `- URL: ${window.location.href}`,
+                `- User Agent: ${navigator.userAgent}`,
+                `- Screen: ${window.innerWidth}x${window.innerHeight}`,
+                `- Time: ${new Date().toISOString()}`,
+                '',
+                '## Description',
+                'Describe the issue here...',
+                '',
+                '## Steps to Reproduce',
+                '1. ',
+                '',
+                '## Expected Behavior',
+                '',
+                '## Actual Behavior',
+              ].join('\n');
+              const url = `https://github.com/georghoerner/firelock_bluebird/issues/new?title=Bug+Report&body=${encodeURIComponent(info)}`;
+              window.open(url, '_blank');
+            }}
+            className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer"
+            title="Report a bug"
+          >
+            [REPORT ISSUE]
+          </button>
+        </span>
       </footer>
     </div>
   );

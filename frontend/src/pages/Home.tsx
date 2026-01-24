@@ -38,13 +38,8 @@ export function Home() {
       <Separator />
 
       {/* Communications section placeholder */}
-      <div className="mt-4">
-        <label className="block mb-1 text-dim">COMMUNICATIONS (optional):</label>
-        <input
-          type="email"
-          placeholder="email@example.com - to track your army list"
-          className="w-full md:w-1/2"
-        />
+      <div className="mt-4 text-dim text-sm">
+        We are working on adding a way to share sightings internally. Please contact your supervisor for more information.
       </div>
     </Terminal>
   );

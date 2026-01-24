@@ -42,9 +42,18 @@ claude-pretalk.json
 .claude/
 claude-steps-taken-*.md
 
-# todo folders
+# todo folders and files
 .todo/
 .todos/
+TODO*.md
+TODO*.MD
+
+# ASCII example images (development only)
+ascii/
+
+# Misc dev files
+*.md.bak
+2025-*.md
 
 # Game IP - not included in repo
 frontend/src/data/factions/*.json

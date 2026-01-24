@@ -2,3 +2,4 @@ export { Terminal, Cursor, Prompt, Message, Box, Separator, DoubleSeparator } fr
 export { CollapsibleSection } from './CollapsibleSection';
 export { GridTooltip, HoverExplain } from './GridTooltip';
 export { ExampleBlock } from './ExampleBlock';
+export { ConsentBanner } from './ConsentBanner';
