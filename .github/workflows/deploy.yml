@@ -29,8 +29,9 @@ jobs:
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           cd /opt/stacks/bluebird
           git config --global --add safe.directory /opt/stacks/bluebird
+          git config --global --add safe.directory /opt/stacks/bluebird/frontend/game-data
           git pull origin main
-          git submodule update --init --recursive
+          git submodule update --init --recursive --remote
           COMPOSE_PARALLEL_LIMIT=1 docker compose -f docker-compose.prod.yml build --no-cache --pull
           docker compose -f docker-compose.prod.yml up -d --force-recreate
           docker image prune -f
