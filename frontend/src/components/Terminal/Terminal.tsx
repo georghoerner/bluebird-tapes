@@ -56,7 +56,7 @@ export function Terminal({ children, hideHeader = false }: TerminalProps) {
                 '',
                 '## Actual Behavior',
               ].join('\n');
-              const url = `https://github.com/georghoerner/firelock_bluebird/issues/new?title=Bug+Report&body=${encodeURIComponent(info)}`;
+              const url = `https://github.com/georghoerner/bluebird_tapes/issues/new?title=Bug+Report&body=${encodeURIComponent(info)}`;
               window.open(url, '_blank');
             }}
             className="hover:text-bright bg-transparent border-0 p-0 m-0 cursor-pointer"
