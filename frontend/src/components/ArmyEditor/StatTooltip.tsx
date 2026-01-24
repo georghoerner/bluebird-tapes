@@ -31,25 +31,25 @@ export function StatTooltip({ children, tooltip }: StatTooltipProps) {
 // Stat field explanations
 export const STAT_TOOLTIPS: Record<string, string> = {
   // Unit type (Unit Class)
-  type: 'Unit Class - Determines unit behavior and targeting',
-  'Inf': 'Infantry - Foot soldiers',
-  'Inf (S)': 'Infantry Squad - Larger infantry formation',
-  'Vec': 'Vehicle - Armored ground vehicle',
-  'Vec (W)': 'Vehicle (Wheeled) - Fast wheeled transport',
-  'Vec (H)': 'Vehicle (Hover) - Hovercraft, can cross water',
-  'Vec (S)': 'Vehicle (Strider) - Bipedal walker mech',
-  'Vec (C)': 'Vehicle (Caterpillar) - Tracked vehicle',
-  'Air': 'Aircraft - Flying unit',
-  'Air (CAS)': 'Aircraft (Close Air Support) - Ground attack plane',
-  'Air (CAP)': 'Aircraft (Combat Air Patrol) - Air superiority fighter',
+  type: 'Unit Class',
+  'Inf': 'Infantry',
+  'Inf (S)': 'Infantry Squad',
+  'Vec': 'Vehicle',
+  'Vec (W)': 'Vehicle (Wheeled)',
+  'Vec (H)': 'Vehicle (Hovercraft)',
+  'Vec (S)': 'Vehicle (Strider',
+  'Vec (C)': 'Vehicle (Caterpillar)',
+  'Air': 'Aircraft',
+  'Air (CAS)': 'Aircraft (Close Air Support)',
+  'Air (CAP)': 'Aircraft (Combat Air Patrol)',
 
   // Unit Stats
-  hull: 'Height (H) - Unit tallness. Higher = taller unit, easier to spot/hit',
-  spot: 'Spotting Distance (S) - How far this unit can spot enemies',
-  move: 'Move (M) - Movement in inches per turn (before terrain modifiers)',
-  quality: 'Quality (Q) - Discipline and nerve. Higher = better',
-  toughness: 'Toughness (T) - Armor values: Front/Side/Rear arcs',
-  command: 'Command (C) - Tokens generated at Support Phase. TACOMs only',
+  hull: 'Height (H) - The higher the statistic, the taller the unit.',
+  speed: 'Spotting Distance (S)',
+  move: 'Move (M) - The number of inches the unit can move (before terrain multipliers) in one turn.',
+  quality: 'Quality (Q) - The higher the statistic, the better the unit’s discipline and nerve.',
+  toughness: 'Toughness (T) - Three numbers indicating the unit’s resilience to damage on its front, side, and rear arcs respectively.',
+  command: 'Command (C) - Command tokens generated at beginning of Support Phase. TACOMs only',
 
   // Weapon stats
   targets: 'Target - Unit classes this weapon can engage',
@@ -66,7 +66,7 @@ export const WEAPON_STAT_TOOLTIPS: Record<string, string> = {
   'Inf': 'May target Infantry only',
   'Vec': 'May target Vehicles only',
   'Air': 'May target Aircraft only',
-  'Gnd': 'Ground-targeting - Targets a point on ground, affects units in Radius',
+  'Gnd': 'Ground-targeting - Targets a point on ground, affects units in listed Radius',
   'Inf/Vec': 'May target Infantry and Vehicles',
   'Vec/Air': 'May target Vehicles and Aircraft',
 };
