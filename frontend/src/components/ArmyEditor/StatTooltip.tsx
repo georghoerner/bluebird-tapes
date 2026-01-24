@@ -45,7 +45,7 @@ export const STAT_TOOLTIPS: Record<string, string> = {
 
   // Unit Stats
   hull: 'Height (H) - Unit tallness. Higher = taller unit, easier to spot/hit',
-  speed: 'Spotting Distance (S) - How far this unit can spot enemies',
+  spot: 'Spotting Distance (S) - How far this unit can spot enemies',
   move: 'Move (M) - Movement in inches per turn (before terrain modifiers)',
   quality: 'Quality (Q) - Discipline and nerve. Higher = better',
   toughness: 'Toughness (T) - Armor values: Front/Side/Rear arcs',

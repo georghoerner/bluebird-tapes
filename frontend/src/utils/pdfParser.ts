@@ -23,7 +23,7 @@ export interface ParsedWeapon {
 export interface ParsedStats {
   type: string;           // "Vec", "Inf", "Air", etc.
   hull: number;           // H2 -> 2
-  speed: string;          // S32"
+  spot: string;          // S32"
   move: string;           // M6"
   quality: number;        // Q2 -> 2
   toughness: string;      // T8/6/5
@@ -462,7 +462,7 @@ function parseStatsLine(line: string): ParsedStats {
   const stats: ParsedStats = {
     type: parts[0] || 'Unknown',
     hull: 0,
-    speed: '',
+    spot: '',
     move: '',
     quality: 0,
     toughness: ''

@@ -13,7 +13,7 @@ export interface Weapon {
 export interface UnitStats {
   type: string;
   hull: number;
-  speed: string;
+  spot: string;
   move: string;
   quality: number;
   toughness: string;
