@@ -22,6 +22,8 @@ import { parser } from '../../utils/armyListParser/parser.js';
 import { matchFactionByAlias } from '../../hooks/useFactionData';
 import { normalizeForComparison } from './utils/normalize';
 
+const STORAGE_KEY = 'bluebird-army-list';
+
 interface CodeMirrorEditorProps {
   maxWidth?: number;
   factions: { id: string; name: string }[];
@@ -61,8 +63,24 @@ export function CodeMirrorEditor({
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [fontSize, setFontSize] = useState(16);
-  const [text, setText] = useState('');
-  const [selectedFaction, setSelectedFaction] = useState<string | null>(null);
+  const [text, setText] = useState(() => {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
+  const [selectedFaction, setSelectedFaction] = useState<string | null>(() => {
+    // Auto-detect faction from saved content
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) || '';
+      const firstLine = saved.split('\n').find(l => l.trim());
+      if (firstLine) {
+        return matchFactionByAlias(firstLine.trim()) || null;
+      }
+    } catch { /* ignore */ }
+    return null;
+  });
   const [debugMode, setDebugMode] = useState(false);
   const [validationErrors, _setValidationErrors] = useState<Array<{ line: number; message: string; type: string }>>([]);
   // TODO: Hook up validation errors from CodeMirror state to _setValidationErrors
@@ -484,6 +502,10 @@ export function CodeMirrorEditor({
         const content = update.state.doc.toString();
         setText(content);
         onTextChange?.(content);
+        // Persist to localStorage
+        try {
+          localStorage.setItem(STORAGE_KEY, content);
+        } catch { /* ignore quota errors */ }
         calculateStats(content);
 
         // Auto-detect faction from first non-empty line
@@ -516,8 +538,19 @@ export function CodeMirrorEditor({
       }
     });
 
+    // Load saved content from localStorage
+    let initialDoc = '';
+    try {
+      initialDoc = localStorage.getItem(STORAGE_KEY) || '';
+    } catch { /* ignore */ }
+
+    // Calculate initial stats if there's saved content
+    if (initialDoc) {
+      calculateStats(initialDoc);
+    }
+
     const state = EditorState.create({
-      doc: '',
+      doc: initialDoc,
       extensions: [
         history(),
         keymap.of([...defaultKeymap, ...historyKeymap]),
@@ -608,6 +641,12 @@ export function CodeMirrorEditor({
     });
 
     viewRef.current = view;
+
+    // Trigger initial cursor unit detection if there's saved content
+    if (initialDoc) {
+      const cursorPos = view.state.selection.main.head;
+      updateCursorUnitRef.current(initialDoc, cursorPos);
+    }
 
     return () => {
       view.destroy();
