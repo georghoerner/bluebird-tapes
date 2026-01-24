@@ -146,7 +146,9 @@ export function ExampleBlock() {
         {'\n'}
         [...]
       </pre>
-
+      <div className="mt-4 text-dim text-sm">
+        <span className="text-bright">WARNING:</span> If you do not have the file on your system and reload, the list is gone.
+      </div>
       <div className="mt-4 text-dim text-sm">
         <span className="text-bright">TIP:</span> Hover your cursor over any highlighted text above to see explanations.
       </div>
