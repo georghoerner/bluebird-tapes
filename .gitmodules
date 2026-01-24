@@ -1,3 +1,3 @@
 [submodule "frontend/game-data"]
 	path = frontend/game-data
-	url = https://github.com/georghoerner/firelock_bluebird-data.git
+	url = git@github.com:georghoerner/firelock_bluebird-data.git
