@@ -148,7 +148,10 @@ export function ExampleBlock() {
       </pre>
 
       <div className="mt-4 text-dim text-sm">
-        <span className="text-bright">TIP:</span> Hover over any highlighted text above to see explanations.
+        <span className="text-bright">TIP:</span> Hover your cursor over any highlighted text above to see explanations.
+      </div>
+      <div className="mt-4 text-dim text-sm">
+        <span className="text-bright">TIP:</span> Use the [SAVE] button in ARMY LIST ENTRY to get a printable list of your sighting.
       </div>
     </CollapsibleSection>
   );
