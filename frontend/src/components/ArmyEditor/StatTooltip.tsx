@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 interface StatTooltipProps {
   children: ReactNode;
@@ -7,24 +8,48 @@ interface StatTooltipProps {
 
 /**
  * Inline tooltip component for stat explanations.
- * Shows tooltip on hover.
+ * Shows tooltip on hover. Uses portal to render above all panels.
  */
 export function StatTooltip({ children, tooltip }: StatTooltipProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (showTooltip && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.top - 30, // 30px above the element (fixed positioning is viewport-relative)
+        left: rect.left + rect.width / 2,
+      });
+    }
+  }, [showTooltip]);
 
   return (
-    <span
-      className="relative cursor-help border-b border-dotted border-[var(--terminal-dim)]"
-      onMouseEnter={() => setShowTooltip(true)}
-      onMouseLeave={() => setShowTooltip(false)}
-    >
-      {children}
-      {showTooltip && (
-        <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 px-2 py-1 text-xs bg-[var(--terminal-bg)] border border-[var(--terminal-fg)] whitespace-nowrap z-50">
+    <>
+      <span
+        ref={triggerRef}
+        className="relative cursor-help border-b border-dotted border-[var(--terminal-dim)]"
+        onMouseEnter={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        {children}
+      </span>
+      {showTooltip && createPortal(
+        <div
+          className="fixed px-2 py-1 text-xs bg-[var(--terminal-bg)] border border-[var(--terminal-fg)] whitespace-nowrap pointer-events-none"
+          style={{
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+          }}
+        >
           {tooltip}
-        </span>
+        </div>,
+        document.body
       )}
-    </span>
+    </>
   );
 }
 
@@ -44,8 +69,8 @@ export const STAT_TOOLTIPS: Record<string, string> = {
   'Air (CAP)': 'Aircraft (Combat Air Patrol)',
 
   // Unit Stats
-  hull: 'Height (H) - The higher the statistic, the taller the unit.',
-  speed: 'Spotting Distance (S)',
+  height: 'Height (H) - The higher the statistic, the taller the unit.',
+  spot: 'Spotting Distance (S)',
   move: 'Move (M) - The number of inches the unit can move (before terrain multipliers) in one turn.',
   quality: 'Quality (Q) - The higher the statistic, the better the unit’s discipline and nerve.',
   toughness: 'Toughness (T) - Three numbers indicating the unit’s resilience to damage on its front, side, and rear arcs respectively.',
