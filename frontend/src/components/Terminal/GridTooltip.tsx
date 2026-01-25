@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 type TooltipVariant = 'info' | 'warning' | 'stats' | 'help';
 
@@ -132,13 +133,14 @@ export function GridTooltip({
         {children}
       </span>
 
-      {isVisible && (
+      {isVisible && createPortal(
         <div
           ref={tooltipRef}
-          className="fixed z-50 pointer-events-none"
+          className="fixed pointer-events-none"
           style={{
             top: tooltipPosition.top,
             left: tooltipPosition.left,
+            zIndex: 9999,
           }}
         >
           <pre
@@ -149,7 +151,8 @@ export function GridTooltip({
           >
             {buildTooltipBox()}
           </pre>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
