@@ -26,7 +26,8 @@ export function Privacy() {
           <p className="mb-2">We collect minimal data necessary to operate the service:</p>
           <ul className="list-none space-y-1 text-dim">
             <li>► <span className="text-[var(--terminal-fg)]">Local Storage:</span> Your consent preferences (stored in your browser only)</li>
-            <li>► <span className="text-[var(--terminal-fg)]">Server Logs:</span> Standard web server logs (IP address, timestamp, pages visited) for security purposes</li>
+            <li>► <span className="text-[var(--terminal-fg)]">Server Logs:</span> Standard web server logs (IP address, timestamp, pages visited) retained for 30 days for security purposes</li>
+            <li>► <span className="text-[var(--terminal-fg)]">Cloudflare Analytics:</span> Privacy-friendly visitor statistics (aggregated data only, no cookies, no personal identification)</li>
           </ul>
           <p className="mt-2 text-dim">
             Army lists are created locally in your browser and downloaded as text files.
@@ -40,9 +41,10 @@ export function Privacy() {
           <h2 className="text-bright terminal-glow mb-2">3. DATA WE DO NOT COLLECT</h2>
           <ul className="list-none space-y-1 text-dim">
             <li>► No email addresses or personal identifiers</li>
-            <li>► No tracking cookies or analytics</li>
-            <li>► No third-party advertising</li>
-            <li>► No data sharing with external parties</li>
+            <li>► No tracking cookies (Cloudflare Analytics is cookie-free)</li>
+            <li>► No third-party advertising or trackers</li>
+            <li>► No sale or sharing of data with external parties</li>
+            <li>► No user account data or login information</li>
           </ul>
         </section>
 
@@ -74,10 +76,21 @@ export function Privacy() {
         <Separator />
 
         <section>
-          <h2 className="text-bright terminal-glow mb-2">6. CLOUDFLARE</h2>
+          <h2 className="text-bright terminal-glow mb-2">6. CLOUDFLARE ANALYTICS</h2>
+          <p className="text-dim mb-2">
+            This site uses Cloudflare Analytics to understand visitor traffic patterns.
+            Cloudflare Analytics is privacy-friendly:
+          </p>
+          <ul className="list-none space-y-1 text-dim mb-2">
+            <li>► No cookies or local storage used</li>
+            <li>► No cross-site tracking</li>
+            <li>► No personal information collected</li>
+            <li>► Aggregated statistics only (page views, country-level location)</li>
+            <li>► GDPR compliant</li>
+          </ul>
           <p className="text-dim">
-            This site is served through Cloudflare, which may collect standard web traffic data
-            for security and performance purposes. See{' '}
+            This site is also served through Cloudflare's CDN for security and performance.
+            See{' '}
             <a
               href="https://www.cloudflare.com/privacypolicy/"
               target="_blank"
@@ -86,7 +99,7 @@ export function Privacy() {
             >
               Cloudflare's Privacy Policy
             </a>{' '}
-            for details.
+            for more details.
           </p>
         </section>
 

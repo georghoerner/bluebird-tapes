@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const CONSENT_KEY = 'bluebird-consent';
 // Increment this when privacy policy changes require new consent
-const CONSENT_VERSION = 1;
+const CONSENT_VERSION = 2;
 
 /**
  * GDPR-style consent banner in terminal aesthetic.
@@ -49,9 +49,10 @@ export function ConsentBanner() {
 ╚══════════════════════════════════════════════════════════════════════════╝`}
         </pre>
         <p className="text-sm mb-3">
-          This terminal uses local storage to save your preferences.
-          No personal data is transmitted to external servers. No tracking cookies are used.
-          By continuing, you acknowledge this data handling practice.
+          This terminal uses local storage to save your preferences and Cloudflare Analytics
+          to count visitors (no cookies, no personal data collected).
+          Server logs are retained for 30 days for security purposes.
+          By continuing, you consent to these privacy-friendly analytics.
         </p>
         <div className="flex gap-4 justify-end">
           <button
