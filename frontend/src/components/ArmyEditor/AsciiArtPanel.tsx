@@ -184,17 +184,23 @@ export function AsciiArtPanel({ unit }: AsciiArtPanelProps) {
               const entries = parseAsciiRow(row);
               return (
                 <div key={rowIdx} style={{ height: `${fontSize}px` }}>
-                  {entries.map((entry, colIdx) => (
-                    <span
-                      key={colIdx}
-                      style={{
-                        color: asciiData.fg_palette[entry.fgIdx] || '#FFFFFF',
-                        backgroundColor: asciiData.bg_palette[entry.bgIdx] || 'transparent',
-                      }}
-                    >
-                      {entry.char}
-                    </span>
-                  ))}
+                  {entries.map((entry, colIdx) => {
+                    // -1 index = transparent cell, render plain space
+                    if (entry.fgIdx === -1) {
+                      return <span key={colIdx}> </span>;
+                    }
+                    return (
+                      <span
+                        key={colIdx}
+                        style={{
+                          color: asciiData.fg_palette[entry.fgIdx] || '#FFFFFF',
+                          backgroundColor: asciiData.bg_palette[entry.bgIdx] || 'transparent',
+                        }}
+                      >
+                        {entry.char}
+                      </span>
+                    );
+                  })}
                 </div>
               );
             })}

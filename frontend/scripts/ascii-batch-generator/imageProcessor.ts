@@ -162,14 +162,25 @@ export async function processImage(
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-  // Get pixel data
+  // Get pixel data from original image (not scaled canvas) to preserve alpha
+  const srcCanvas = createCanvas(img.width, img.height);
+  const srcCtx = srcCanvas.getContext('2d');
+  srcCtx.drawImage(img, 0, 0);
+  const srcImageData = srcCtx.getImageData(0, 0, img.width, img.height);
+  const srcPixels = srcImageData.data;
+
+  // Get pixel data from scaled canvas for color sampling
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const pixels = imageData.data;
 
   const chars = CHAR_SETS[charSet];
   const allFgColors: RGB[] = [];
   const allBgColors: RGB[] = [];
-  const cellData: { brightness: number; avgColor: RGB; darkColor: RGB }[][] = [];
+  const cellData: { brightness: number; avgColor: RGB; darkColor: RGB; isTransparent: boolean }[][] = [];
+
+  // Calculate scale factor for mapping scaled canvas coords to original image
+  const scaleX = img.width / canvas.width;
+  const scaleY = img.height / canvas.height;
 
   // First pass: collect all cell data
   for (let row = 0; row < rows; row++) {
@@ -178,6 +189,7 @@ export async function processImage(
       let totalR = 0, totalG = 0, totalB = 0;
       let darkR = 0, darkG = 0, darkB = 0;
       let totalBrightness = 0;
+      let totalAlpha = 0;
       let pixelCount = 0;
       let darkCount = 0;
 
@@ -188,11 +200,19 @@ export async function processImage(
           const r = pixels[idx];
           const g = pixels[idx + 1];
           const b = pixels[idx + 2];
+
+          // Sample alpha from original image at corresponding position
+          const srcX = Math.min(Math.floor(x * scaleX), img.width - 1);
+          const srcY = Math.min(Math.floor(y * scaleY), img.height - 1);
+          const srcIdx = (srcY * img.width + srcX) * 4;
+          const alpha = srcPixels[srcIdx + 3];
+
           const brightness = getBrightness(r, g, b);
 
           totalR += r;
           totalG += g;
           totalB += b;
+          totalAlpha += alpha;
           totalBrightness += brightness;
           pixelCount++;
 
@@ -205,6 +225,9 @@ export async function processImage(
           }
         }
       }
+
+      const avgAlpha = totalAlpha / pixelCount;
+      const isTransparent = avgAlpha < 128; // Less than 50% opaque = transparent
 
       const avgColor: RGB = {
         r: Math.round(totalR / pixelCount),
@@ -222,11 +245,15 @@ export async function processImage(
         brightness: totalBrightness / pixelCount,
         avgColor,
         darkColor,
+        isTransparent,
       };
 
-      allFgColors.push(avgColor);
-      if (useBgColors) {
-        allBgColors.push(darkColor);
+      // Only add colors for non-transparent cells
+      if (!isTransparent) {
+        allFgColors.push(avgColor);
+        if (useBgColors) {
+          allBgColors.push(darkColor);
+        }
       }
     }
   }
@@ -241,7 +268,17 @@ export async function processImage(
   for (let row = 0; row < rows; row++) {
     result[row] = [];
     for (let col = 0; col < cols; col++) {
-      const { brightness, avgColor, darkColor } = cellData[row][col];
+      const { brightness, avgColor, darkColor, isTransparent } = cellData[row][col];
+
+      // Transparent cells get space with null colors
+      if (isTransparent) {
+        result[row][col] = {
+          char: ' ',
+          fgColor: null,
+          bgColor: null,
+        };
+        continue;
+      }
 
       // Map brightness to character
       const charIdx = Math.floor((brightness / 255) * (chars.length - 1));

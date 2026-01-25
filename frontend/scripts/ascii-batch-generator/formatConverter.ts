@@ -4,8 +4,8 @@
 
 export interface AsciiChar {
   char: string;
-  fgColor: string;
-  bgColor: string;
+  fgColor: string | null;  // null = transparent
+  bgColor: string | null;  // null = transparent
 }
 
 export interface AsciiFormatJson {
@@ -46,9 +46,14 @@ export function convertToAsciiFormat(
   const fgSet = new Map<string, number>();
   const bgSet = new Map<string, number>();
 
-  // First pass: collect unique colors
+  // First pass: collect unique colors (skip transparent cells)
   for (const row of asciiChars) {
     for (const cell of row) {
+      // Skip transparent cells
+      if (cell.fgColor === null || cell.bgColor === null) {
+        continue;
+      }
+
       const fgHex = rgbToHex(cell.fgColor);
       const bgHex = rgbToHex(cell.bgColor);
 
@@ -67,6 +72,11 @@ export function convertToAsciiFormat(
   // Second pass: build indexed data rows
   const data = asciiChars.map(row =>
     row.map(cell => {
+      // Transparent cells use -1 indices
+      if (cell.fgColor === null || cell.bgColor === null) {
+        return `-1,-1, `;
+      }
+
       const fgHex = rgbToHex(cell.fgColor);
       const bgHex = rgbToHex(cell.bgColor);
       const fgIdx = fgSet.get(fgHex) ?? 0;
